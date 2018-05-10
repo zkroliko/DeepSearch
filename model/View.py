@@ -4,11 +4,11 @@ from multiprocessing.pool import Pool
 import multiprocessing
 import numpy as np
 
-from acoAlgorithm.Point import Point
-from acoAlgorithm.LightMap import LightMap
-from acoAlgorithm.Ray import Ray
-from acoAlgorithm.utils.TriangleArea import triangle_area
-from acoAlgorithm.utils.TriangleRasterization import rasterize_triangle
+from model.Point import Point
+from model.LightMap import LightMap
+from model.Ray import Ray
+from model.utils.TriangleArea import triangle_area
+from model.utils.TriangleRasterization import rasterize_triangle
 
 
 class ViewGenerator():

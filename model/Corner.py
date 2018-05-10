@@ -1,6 +1,6 @@
 from enum import Enum
 
-from acoAlgorithm.Field import Field, FieldType
+from model.Field import Field, FieldType
 
 
 # The offset is needed for raytracing

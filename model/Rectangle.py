@@ -1,13 +1,13 @@
 import hashlib
 
-from acoAlgorithm.Corner import Corner, CornerType
-from acoAlgorithm.Field import FieldType, Field
+from model.Corner import Corner, CornerType
+from model.Field import FieldType, Field
 
 import numpy as np
 
 # Rectangle is identified by two fields at the end of it's diagonal
-from acoAlgorithm.Point import Point
-from acoAlgorithm.TwoCoordinate import TwoCoordinate
+from model.Point import Point
+from model.TwoCoordinate import TwoCoordinate
 
 
 class Rectangle():

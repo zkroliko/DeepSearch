@@ -1,11 +1,11 @@
 import numpy as np
 
-from acoAlgorithm.AntiLoopMap import AntiLoopMap
-from acoAlgorithm.Field import Field
-from acoAlgorithm.LightMap import LightMap
-from acoAlgorithm.Move import Move
-from acoAlgorithm.View import ViewGenerator
-from acoAlgorithm.utils.Cache import LRUCache, MoveCache
+from model.AntiLoopMap import AntiLoopMap
+from model.Field import Field
+from model.LightMap import LightMap
+from model.Move import Move
+from model.View import ViewGenerator
+from model.utils.Cache import LRUCache, MoveCache
 
 
 class Walker:

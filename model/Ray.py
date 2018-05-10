@@ -1,13 +1,13 @@
 import math
 
-from acoAlgorithm.Field import Field
-from acoAlgorithm.Rectangle import Rectangle
-from acoAlgorithm.TwoCoordFloat import TwoCoordFloat
-from acoAlgorithm.TwoCoordinate import TwoCoordinate
+from model.Field import Field
+from model.Rectangle import Rectangle
+from model.TwoCoordFloat import TwoCoordFloat
+from model.TwoCoordinate import TwoCoordinate
 
 import numpy as np
 
-from acoAlgorithm.utils.FloatUtils import is_close
+from model.utils.FloatUtils import is_close
 
 
 class Ray:

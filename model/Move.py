@@ -1,6 +1,6 @@
-from acoAlgorithm.Field import Field, FieldType
-from acoAlgorithm.Rectangle import Rectangle
-from acoAlgorithm.TwoCoordinate import TwoCoordinate
+from model.Field import Field, FieldType
+from model.Rectangle import Rectangle
+from model.TwoCoordinate import TwoCoordinate
 
 import numpy as np
 

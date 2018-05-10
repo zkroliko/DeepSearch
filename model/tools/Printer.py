@@ -1,8 +1,8 @@
-from acoAlgorithm.LightMap import LightMap
-from acoAlgorithm.Rectangle import Rectangle
-from acoAlgorithm.Field import Field
-from acoAlgorithm.Area import Area
-from acoAlgorithm.View import ViewGenerator
+from model.LightMap import LightMap
+from model.Rectangle import Rectangle
+from model.Field import Field
+from model.Area import Area
+from model.View import ViewGenerator
 
 
 class Printer:

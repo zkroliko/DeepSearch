@@ -1,5 +1,5 @@
-from acoAlgorithm.TwoCoordinate import TwoCoordinate
-from acoAlgorithm.utils.FloatUtils import is_close
+from model.TwoCoordinate import TwoCoordinate
+from model.utils.FloatUtils import is_close
 
 
 class TwoCoordFloat(TwoCoordinate):

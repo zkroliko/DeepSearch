@@ -3,10 +3,10 @@ import time
 
 import math
 
-from acoAlgorithm.LightMap import LightMap
-from acoAlgorithm.PheromoneMap import PheromoneMap
-from acoAlgorithm.Walker import Walker
-from acoAlgorithm.tools.Printer import Printer
+from model.LightMap import LightMap
+from model.PheromoneMap import PheromoneMap
+from model.Walker import Walker
+from model.tools.Printer import Printer
 from examples.Scenario1 import Scenario1
 
 class Simulation:

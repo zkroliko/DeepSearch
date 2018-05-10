@@ -3,8 +3,8 @@ from enum import Enum
 import bitarray as bitarray
 import numpy as np
 
-from acoAlgorithm.Point import Point
-from acoAlgorithm.Ray import Ray
+from model.Point import Point
+from model.Ray import Ray
 
 
 class LightMap:

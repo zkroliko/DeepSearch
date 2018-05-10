@@ -1,8 +1,8 @@
 import numpy as np
 
-from acoAlgorithm.Corner import Corner
-from acoAlgorithm.Field import Field
-from acoAlgorithm.TwoCoordinate import TwoCoordinate
+from model.Corner import Corner
+from model.Field import Field
+from model.TwoCoordinate import TwoCoordinate
 
 
 class Point(TwoCoordinate):

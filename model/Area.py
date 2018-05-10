@@ -1,5 +1,5 @@
-from acoAlgorithm.Rectangle import Rectangle
-from acoAlgorithm.Field import Field, FieldType
+from model.Rectangle import Rectangle
+from model.Field import Field, FieldType
 
 
 class Area:
