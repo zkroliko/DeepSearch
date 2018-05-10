@@ -1,15 +1,13 @@
 import numpy as np
 
 from model.Field import Field
-from model.LightMap import LightMap
 from model.Move import Move
 from model.View import ViewGenerator
-from model.utils.Cache import LRUCache, MoveCache
 
 
 class Walker:
     # Moves we can make
-    MOVES = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
+    MOVES = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1), (0, 0)]
 
     def __init__(self, area, start, decision_maker, shadow_map=None):
         self.area = area
