@@ -1,0 +1,41 @@
+AppScreen:
+
+<AppScreen@BoxLayout>:
+    map: map_widget_id
+    Menu:
+        width: root.width
+    Map:  # 5
+        id: map_widget_id
+    Label:
+        font_size: 18
+        center_x: root.width / 13
+        top: root.top - 15
+        text: "Iterations: "
+    Label:
+        font_size: 18
+        center_x: root.width / 13
+        top: root.top - 35
+        text: str(app.iteration) + "/" + str(app.all_iterations)
+    Label:
+        font_size: 18
+        center_x: root.width / 13
+        top: root.top - 75
+        text: "Path length: "
+    Label:
+        font_size: 18
+        center_x: root.width / 13
+        top: root.top - 95
+        text: str(app.path_length)
+
+<Menu@BoxLayout>:
+    BoxLayout:
+        height: "40dp"  # 1
+        size_hint_y: None
+        Button:
+            text: "Settings"
+            size_hint_x: 25
+            on_release: app.open_settings()
+        Button:
+            text: "Run"
+            size_hint_x: 25
+            on_release: app.run_simulation()
