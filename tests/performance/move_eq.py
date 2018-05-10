@@ -2,10 +2,10 @@ import time
 
 from mock.mock import self
 
-from acoAlgorithm.Field import Field
-from acoAlgorithm.Move import Move
-from acoAlgorithm.Point import Point
-from acoAlgorithm.View import ViewGenerator
+from model.Field import Field
+from model.Move import Move
+from model.Point import Point
+from model.View import ViewGenerator
 from examples.Scenario1 import Scenario1
 
 start = time.time()

@@ -1,6 +1,6 @@
-from acoAlgorithm.Area import Area
-from acoAlgorithm.Field import Field, FieldType
-from acoAlgorithm.Rectangle import Rectangle
+from model.Area import Area
+from model.Field import Field, FieldType
+from model.Rectangle import Rectangle
 
 
 class Scenario3:

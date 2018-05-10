@@ -1,13 +1,13 @@
-from acoAlgorithm.Area import Area
-from acoAlgorithm.Move import Move
-from acoAlgorithm.Rectangle import Rectangle
-from acoAlgorithm.Field import Field, FieldType
+from model.Area import Area
+from model.Move import Move
+from model.Rectangle import Rectangle
+from model.Field import Field, FieldType
 
 import unittest
 
 import numpy as np
 
-from acoAlgorithm.Point import Point
+from model.Point import Point
 
 
 class TestMove(unittest.TestCase):

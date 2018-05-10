@@ -1,10 +1,10 @@
 import random
 import time
 
-from acoAlgorithm.LightMap import LightMap
-from acoAlgorithm.LightMapOld import LightMapOld
-from acoAlgorithm.Point import Point
-from acoAlgorithm.View import ViewGenerator
+from model.LightMap import LightMap
+from model.LightMapOld import LightMapOld
+from model.Point import Point
+from model.View import ViewGenerator
 from examples.Scenario1 import Scenario1
 from examples.Scenario2 import Scenario2
 from examples.Scenario3 import Scenario3

@@ -1,10 +1,10 @@
 
 import unittest
 
-from acoAlgorithm.Area import Area
-from acoAlgorithm.Rectangle import Rectangle
-from acoAlgorithm.Corner import CornerType
-from acoAlgorithm.Field import Field, FieldType
+from model.Area import Area
+from model.Rectangle import Rectangle
+from model.Corner import CornerType
+from model.Field import Field, FieldType
 
 
 class TestField(unittest.TestCase):

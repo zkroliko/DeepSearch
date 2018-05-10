@@ -1,12 +1,12 @@
 import unittest
 from sets import Set
 
-from acoAlgorithm.Area import Area
-from acoAlgorithm.Field import Field, FieldType
-from acoAlgorithm.Point import Point
-from acoAlgorithm.Rectangle import Rectangle
-from acoAlgorithm.View import ViewGenerator
-from acoAlgorithm.tools.Printer import Printer
+from model.Area import Area
+from model.Field import Field, FieldType
+from model.Point import Point
+from model.Rectangle import Rectangle
+from model.View import ViewGenerator
+from model.tools.Printer import Printer
 
 
 class TestPrinter(unittest.TestCase):

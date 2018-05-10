@@ -1,11 +1,11 @@
 import unittest
 
-from acoAlgorithm.Area import Area
-from acoAlgorithm.LightMap import LightMap
-from acoAlgorithm.PheromoneMap import PheromoneMap
-from acoAlgorithm.Rectangle import Rectangle
-from acoAlgorithm.Field import Field, FieldType
-from acoAlgorithm.Walker import Walker
+from model.Area import Area
+from model.LightMap import LightMap
+from model.PheromoneMap import PheromoneMap
+from model.Rectangle import Rectangle
+from model.Field import Field, FieldType
+from model.Walker import Walker
 
 
 class TestWalker(unittest.TestCase):

@@ -2,11 +2,11 @@ import unittest
 
 from unittest.mock import MagicMock
 
-from acoAlgorithm.Area import Area
-from acoAlgorithm.Field import Field
-from acoAlgorithm.Point import Point
-from acoAlgorithm.Ray import Ray
-from acoAlgorithm.Rectangle import Rectangle
+from model.Area import Area
+from model.Field import Field
+from model.Point import Point
+from model.Ray import Ray
+from model.Rectangle import Rectangle
 
 
 class TestRay(unittest.TestCase):

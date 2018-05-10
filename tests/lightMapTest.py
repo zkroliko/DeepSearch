@@ -1,7 +1,7 @@
-from acoAlgorithm.Area import Area
-from acoAlgorithm.LightMap import LightMap
-from acoAlgorithm.Rectangle import Rectangle
-from acoAlgorithm.Field import Field, FieldType
+from model.Area import Area
+from model.LightMap import LightMap
+from model.Rectangle import Rectangle
+from model.Field import Field, FieldType
 
 import unittest
 

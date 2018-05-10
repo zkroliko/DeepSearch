@@ -2,8 +2,8 @@ import time
 
 from multiprocessing import freeze_support
 
-from acoAlgorithm.Point import Point
-from acoAlgorithm.View import ViewGenerator
+from model.Point import Point
+from model.View import ViewGenerator
 from examples.Scenario1 import Scenario1
 from examples.Scenario2 import Scenario2
 from examples.Scenario3 import Scenario3

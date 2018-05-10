@@ -1,10 +1,10 @@
 import time
 
-from acoAlgorithm.Field import Field
-from acoAlgorithm.Move import Move
+from model.Field import Field
+from model.Move import Move
 
-from acoAlgorithm.Field import Field
-from acoAlgorithm.Rectangle import Rectangle
+from model.Field import Field
+from model.Rectangle import Rectangle
 
 start = time.time()
 

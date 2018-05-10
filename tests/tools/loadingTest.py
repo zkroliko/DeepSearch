@@ -1,9 +1,9 @@
 import unittest
 
-from acoAlgorithm.Area import Area
-from acoAlgorithm.Field import Field
-from acoAlgorithm.Rectangle import Rectangle
-from acoAlgorithm.tools.Loader import load_from_file
+from model.Area import Area
+from model.Field import Field
+from model.Rectangle import Rectangle
+from model.tools.Loader import load_from_file
 
 
 class TestLoading(unittest.TestCase):

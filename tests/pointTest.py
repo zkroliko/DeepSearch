@@ -1,11 +1,11 @@
-from acoAlgorithm.Rectangle import Rectangle
-from acoAlgorithm.Field import Field
+from model.Rectangle import Rectangle
+from model.Field import Field
 
 import unittest
 
 import numpy as np
 
-from acoAlgorithm.Point import Point
+from model.Point import Point
 
 
 class TestPoint(unittest.TestCase):

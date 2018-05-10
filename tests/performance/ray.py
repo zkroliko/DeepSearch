@@ -1,9 +1,9 @@
 import time
 
-from acoAlgorithm.Field import Field
-from acoAlgorithm.Point import Point
-from acoAlgorithm.Ray import Ray
-from acoAlgorithm.Rectangle import Rectangle
+from model.Field import Field
+from model.Point import Point
+from model.Ray import Ray
+from model.Rectangle import Rectangle
 from tests.rayTest import TestRay
 
 start = time.time()

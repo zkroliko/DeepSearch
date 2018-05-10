@@ -4,8 +4,8 @@ import time
 import math
 
 from model.LightMap import LightMap
-from model.PheromoneMap import PheromoneMap
 from model.Walker import Walker
+from model.decision_makers import randomDecision
 from model.tools.Printer import Printer
 from examples.Scenario1 import Scenario1
 
@@ -26,7 +26,6 @@ class Simulation:
         self.iteration = 0
         self.result_file = self.DEFAULT_RESULTS_FILE
         self.path_file = self.DEFAULT_OPTIMIZED_FILE
-        self.pheromone_map = PheromoneMap()
         self.sh = self.SolutionHolder()
 
     def get_fields(self):
@@ -45,12 +44,10 @@ class Simulation:
             print("Shadow map built")
             for iteration in range(self.n_iterations):
                 start = time.time()
-                w = Walker(self.scenario.area(), self.scenario.start(), self.pheromone_map,shadow_map)
+                w = Walker(self.scenario.area(), self.scenario.start(), randomDecision.RandomDecision(), shadow_map)
                 while not w.finished():
                     w.step()
                 length = self.sh.calc_length(w.path)
-                self.pheromone_map.set_update_weight(10000.0 / pow(length, 2))
-                self.pheromone_map.apply_update()
                 # Recording data
                 self.sh.propose_solution(w)
                 data = "%s, %s" % (length, time.time() - start)

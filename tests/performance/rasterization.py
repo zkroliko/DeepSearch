@@ -1,6 +1,6 @@
 import time
 
-import acoAlgorithm.utils.TriangleRasterization as tr
+import model.utils.TriangleRasterization as tr
 import numpy as np
 
 start = time.time()

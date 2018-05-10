@@ -1,9 +1,9 @@
 import random
 import time
 
-from acoAlgorithm.Field import Field
-from acoAlgorithm.LightMap import LightMap
-from acoAlgorithm.Rectangle import Rectangle
+from model.Field import Field
+from model.LightMap import LightMap
+from model.Rectangle import Rectangle
 
 start = time.clock()
 

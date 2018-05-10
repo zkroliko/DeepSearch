@@ -12,7 +12,6 @@ from kivy.properties import ObjectProperty, NumericProperty
 from kivy.uix.widget import Widget
 from kivy.uix.settings import SettingsWithTabbedPanel
 
-from model.PheromoneMap import PheromoneMap
 from model.Simulation import Simulation
 from model.Walker import Walker
 from model.tools.Printer import Printer

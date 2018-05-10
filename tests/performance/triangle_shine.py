@@ -1,7 +1,7 @@
 import time
 
-from acoAlgorithm.Point import Point
-from acoAlgorithm.View import ViewGenerator
+from model.Point import Point
+from model.View import ViewGenerator
 from examples.Scenario1 import Scenario1
 from examples.Scenario3 import Scenario3
 from examples.Scenario4 import Scenario4

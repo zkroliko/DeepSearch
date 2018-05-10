@@ -1,6 +1,6 @@
 import time
 
-from acoAlgorithm.utils.TriangleArea import aprox_triangle_area, triangle_area
+from model.utils.TriangleArea import aprox_triangle_area, triangle_area
 
 triangles = [
     [[0, 0], [5, 0], [0, 5]],

@@ -1,8 +1,8 @@
 import unittest
 
-from acoAlgorithm.Area import Area
-from acoAlgorithm.Rectangle import Rectangle
-from acoAlgorithm.Field import Field
+from model.Area import Area
+from model.Rectangle import Rectangle
+from model.Field import Field
 
 
 class TestArea(unittest.TestCase):
