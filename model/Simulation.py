@@ -1,5 +1,7 @@
+import pickle
 import sys
 import time
+import os.path
 
 import math
 
@@ -22,6 +24,7 @@ class Simulation:
 
     def __init__(self,scenario=DEFAULT_SCENARIO,n_iterations=DEFAULT_N_ITERATIONS):
         self.scenario = scenario
+        self.shadow_file_name = str(self.scenario.name())+"shadow_map"
         self.n_iterations = n_iterations
         self.iteration = 0
         self.result_file = self.DEFAULT_RESULTS_FILE
@@ -38,10 +41,16 @@ class Simulation:
     def start(self, app):
         # For saving results
         with open(self.result_file, 'w') as result_file:
-            print("Building the shadow map")
-            # shadow_map = {}
-            shadow_map = LightMap.build_shadow_map(self.scenario.area())
-            print("Shadow map built")
+            if os.path.isfile(self.shadow_file_name):
+                print("Loading shadow map from file ", self.shadow_file_name)
+                with open(self.shadow_file_name, 'rb') as shadow_file:
+                    shadow_map = pickle.load(shadow_file)
+            else:
+                print("Building the shadow map")
+                shadow_map = LightMap.build_shadow_map(self.scenario.area())
+                with open(self.shadow_file_name, 'wb') as shadow_file:
+                    pickle.dump(shadow_map, shadow_file)
+                print("Shadow map saved")
             for iteration in range(self.n_iterations):
                 start = time.time()
                 w = Walker(self.scenario.area(), self.scenario.start(), randomDecision.RandomDecision(), shadow_map)

@@ -17,3 +17,7 @@ class Scenario4:
         ]
         a += rectangles
         return a
+
+    @staticmethod
+    def name():
+        return "Scenario4"
