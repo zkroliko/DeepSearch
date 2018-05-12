@@ -79,9 +79,8 @@ class AppScreen(Widget):
         # we screen comes into view, start the game
         self.map.draw()
 
+
 class AcoApp(App):
-
-
     def build(self):
         self.m = AppScreen()
         self.fields = []
@@ -89,9 +88,9 @@ class AcoApp(App):
         self.all_iterations = self.iterations
         self.scenario = str(self.config.get('Parameters', 'scenarios'))
         self.scenarios = {'Scenario1': Scenario1,
-                 'Scenario2': Scenario2,
-                 'Scenario3': Scenario3,
-                 'Scenario4': Scenario4}
+                          'Scenario2': Scenario2,
+                          'Scenario3': Scenario3,
+                          'Scenario4': Scenario4}
         self.generate()
         return self.__generate_graphics()
 
@@ -104,30 +103,44 @@ class AcoApp(App):
     path_length = NumericProperty(0)
 
     def generate(self):
-        simulation = Simulation(self.scenarios[self.scenario],self.iterations)
+        simulation = Simulation(self.scenarios[self.scenario], n_iterations=1)
         self.fields = simulation.get_fields()
         self.__generate_graphics()
         return simulation
 
-    def simulate(self):
-        simulation = self.generate()
+    def train(self):
+        simulation = Simulation(self.scenarios[self.scenario], self.training_iteration_finished, self.iterations)
+        simulation.start(self)
+
+    def test(self):
+        simulation = Simulation(self.scenarios[self.scenario], self.test_iteration_finished, 1)
         simulation.start(self)
 
     def result(self, simulation):
         path = simulation.best_solution()
-        for field in path:
-            self.fields[field.x][field.y] = Map.POSITION
-            self.__generate_graphics()
-            time.sleep(0.5)
+        if len(path) > 0:
+            last_x, last_y = (path[0].x, path[0].y)
+            for field in path:
+                self.fields[last_x][last_y] = Map.EMPTY
+                self.fields[field.x][field.y] = Map.POSITION
+                last_x, last_y = (field.x, field.y)
+                self.__generate_graphics()
+                time.sleep(0.25)
 
-    def iteration_finished(self, iteration, length):
-        self.iteration = iteration+1
+    def training_iteration_finished(self, iteration, length):
+        self.iteration = iteration + 1
         if length < self.path_length or self.path_length == 0:
             self.path_length = length
 
-    def run_simulation(self):
-        _thread.start_new_thread(self.simulate, ())
+    def test_iteration_finished(self, iteration, length):
+        if length < self.path_length or self.path_length == 0:
+            self.path_length = length
 
+    def run_training(self):
+        _thread.start_new_thread(self.train, ())
+
+    def run_test(self):
+        _thread.start_new_thread(self.test, ())
 
     def __generate_graphics(self):
         self.m.map.set_fields(self.fields)

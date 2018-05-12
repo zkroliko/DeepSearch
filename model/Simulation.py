@@ -22,8 +22,9 @@ class Simulation:
 
     # Algorithm specific
 
-    def __init__(self,scenario=DEFAULT_SCENARIO,n_iterations=DEFAULT_N_ITERATIONS):
+    def __init__(self, scenario=DEFAULT_SCENARIO, on_iteration=(lambda x,y: None), n_iterations=DEFAULT_N_ITERATIONS,):
         self.scenario = scenario
+        self.on_iteration = on_iteration
         self.shadow_file_name = str(self.scenario.name())+"shadow_map"
         self.n_iterations = n_iterations
         self.iteration = 0
@@ -62,13 +63,14 @@ class Simulation:
                 data = "%s, %s" % (length, time.time() - start)
                 result_file.write(data + "\n")
                 print(data)
-                app.iteration_finished(iteration, length)
+                self.on_iteration(iteration, length)
 
 
             printer = Printer(self.scenario.area())
             printer.set_start(self.scenario.start())
 
-            app.result(self)
+            if self.n_iterations == 1:
+                app.result(self)
             print("# Best solution's length is %s" % self.sh.length)
             print("# Best solution is %s" % self.sh.path_to_str())
             print("Iteration progress saved in {}".format(self.result_file))
