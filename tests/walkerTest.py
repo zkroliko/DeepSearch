@@ -1,8 +1,8 @@
 import unittest
 
 from model.area import Area
+from model.decision_makers.randomDecision import RandomDecision
 from model.lightMap import LightMap
-from model.PheromoneMap import PheromoneMap
 from model.rectangle import Rectangle
 from model.field import Field, FieldType
 from model.walker import Walker
@@ -11,14 +11,14 @@ from model.walker import Walker
 class TestWalker(unittest.TestCase):
     def test_init(self):
         a = Area(Rectangle(Field(0, 0), Field(15, 15)), 2)
-        w = Walker(a, Field(3, 3), PheromoneMap())
+        w = Walker(a, Field(3, 3), decision_maker=RandomDecision())
         self.assertNotEqual(w, None)
         self.assertEqual(w.area, a)
 
     def test_place(self):
         start = Field(3, 3)
         a = Area(Rectangle(Field(0, 0), Field(15, 15)), 2)
-        w = Walker(a, start, PheromoneMap())
+        w = Walker(a, start, RandomDecision())
         self.assertTrue(w.position, start)
         bad_start = Field(323233223, 3322332)
         with self.assertRaises(Exception):
@@ -26,7 +26,7 @@ class TestWalker(unittest.TestCase):
 
     def test_can_step(self):
         a = Area(Rectangle(Field(0, 0), Field(15, 15)), 2)
-        w = Walker(a, Field(3, 3), PheromoneMap())
+        w = Walker(a, Field(3, 3), RandomDecision())
         a += Rectangle(Field(0, 0), Field(5, 2), type=FieldType.inaccessible)
         a += Rectangle(Field(0, 3), Field(2, 7), type=FieldType.inaccessible)
         positions = {
@@ -34,7 +34,7 @@ class TestWalker(unittest.TestCase):
             (3, 4): True,
             (4, 4): True,
             (2, 3): False,
-            (3, 3): False,
+            (3, 3): True,
             (4, 3): True,
             (2, 2): False,
             (2, 3): False,
@@ -51,7 +51,7 @@ class TestWalker(unittest.TestCase):
             (4, 5): True,
             (5, 5): True,
             (3, 4): True,
-            (4, 4): False,
+            (4, 4): True,
             (5, 4): True,
             (3, 3): True,
             (3, 4): True,
@@ -71,7 +71,7 @@ class TestWalker(unittest.TestCase):
         ]
         a += rectangles
 
-        pm = PheromoneMap()
+        pm = RandomDecision()
         start = Field(4, 4)
         # Testing
         test_rectangle1 = Rectangle(Field(3, 3), Field(5, 5))

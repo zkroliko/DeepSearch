@@ -3,11 +3,12 @@ import numpy as np
 from model.utils.choiceUtils import weighted_random
 
 
-class RandomDecision:
+class StandDecision:
     distribution = np.random.rand
 
     def __init__(self):
         pass
 
     def decide(self, possible_moves):
-        return 0, 0
+        standing = [move for move in possible_moves if move.source == move.target]
+        return standing[0]
