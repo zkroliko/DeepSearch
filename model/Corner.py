@@ -1,6 +1,6 @@
 from enum import Enum
 
-from model.Field import Field, FieldType
+from model.field import Field, FieldType
 
 
 # The offset is needed for raytracing

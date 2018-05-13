@@ -1,8 +1,8 @@
 import unittest
 
-from model.Area import Area
-from model.Rectangle import Rectangle
-from model.Field import Field
+from model.area import Area
+from model.rectangle import Rectangle
+from model.field import Field
 
 
 class TestArea(unittest.TestCase):

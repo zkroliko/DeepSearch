@@ -1,11 +1,11 @@
-from model.Rectangle import Rectangle
-from model.Field import Field
+from model.rectangle import Rectangle
+from model.field import Field
 
 import unittest
 
 import numpy as np
 
-from model.Point import Point
+from model.point import Point
 
 
 class TestPoint(unittest.TestCase):

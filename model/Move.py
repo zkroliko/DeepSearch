@@ -1,6 +1,6 @@
-from model.Field import Field, FieldType
-from model.Rectangle import Rectangle
-from model.TwoCoordinate import TwoCoordinate
+from model.field import Field, FieldType
+from model.rectangle import Rectangle
+from model.twoCoordinate import TwoCoordinate
 
 import numpy as np
 

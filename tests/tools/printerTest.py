@@ -1,11 +1,11 @@
 import unittest
 from sets import Set
 
-from model.Area import Area
-from model.Field import Field, FieldType
-from model.Point import Point
-from model.Rectangle import Rectangle
-from model.View import ViewGenerator
+from model.area import Area
+from model.field import Field, FieldType
+from model.point import Point
+from model.rectangle import Rectangle
+from model.view import ViewGenerator
 from model.tools.Printer import Printer
 
 

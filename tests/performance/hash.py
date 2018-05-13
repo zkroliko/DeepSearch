@@ -1,7 +1,7 @@
 import time
 
-from model.Field import Field
-from model.Move import Move
+from model.field import Field
+from model.move import Move
 
 start = time.time()
 

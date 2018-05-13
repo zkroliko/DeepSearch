@@ -4,9 +4,9 @@ from multiprocessing.pool import Pool
 import multiprocessing
 import numpy as np
 
-from model.Point import Point
-from model.LightMap import LightMap
-from model.Ray import Ray
+from model.point import Point
+from model.lightMap import LightMap
+from model.ray import Ray
 from model.utils.TriangleArea import triangle_area
 from model.utils.TriangleRasterization import rasterize_triangle
 
@@ -24,6 +24,9 @@ class ViewGenerator():
         # For triangle raytracing
         # self.corner_points = []
         # self.setup_corners()
+
+    def finished(self):
+        return self.lm.finished()
 
     # Adds possible moves to light map
     def react_to_new_place(self, moves):

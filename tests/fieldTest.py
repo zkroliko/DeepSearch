@@ -1,10 +1,10 @@
 
 import unittest
 
-from model.Area import Area
-from model.Rectangle import Rectangle
-from model.Corner import CornerType
-from model.Field import Field, FieldType
+from model.area import Area
+from model.rectangle import Rectangle
+from model.corner import CornerType
+from model.field import Field, FieldType
 
 
 class TestField(unittest.TestCase):

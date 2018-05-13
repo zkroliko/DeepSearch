@@ -1,5 +1,5 @@
-from model.Rectangle import Rectangle
-from model.Field import Field, FieldType
+from model.rectangle import Rectangle
+from model.field import Field, FieldType
 
 
 class Area:

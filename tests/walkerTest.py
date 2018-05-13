@@ -1,11 +1,11 @@
 import unittest
 
-from model.Area import Area
-from model.LightMap import LightMap
+from model.area import Area
+from model.lightMap import LightMap
 from model.PheromoneMap import PheromoneMap
-from model.Rectangle import Rectangle
-from model.Field import Field, FieldType
-from model.Walker import Walker
+from model.rectangle import Rectangle
+from model.field import Field, FieldType
+from model.walker import Walker
 
 
 class TestWalker(unittest.TestCase):

@@ -1,8 +1,8 @@
 import numpy as np
 
-from model.Corner import Corner
-from model.Field import Field
-from model.TwoCoordinate import TwoCoordinate
+from model.corner import Corner
+from model.field import Field
+from model.twoCoordinate import TwoCoordinate
 
 
 class Point(TwoCoordinate):

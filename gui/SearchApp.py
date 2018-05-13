@@ -12,8 +12,8 @@ from kivy.properties import ObjectProperty, NumericProperty
 from kivy.uix.widget import Widget
 from kivy.uix.settings import SettingsWithTabbedPanel
 
-from model.Simulation import Simulation
-from model.Walker import Walker
+from model.simulation import Simulation
+from model.walker import Walker
 from model.tools.Printer import Printer
 from examples.Scenario1 import Scenario1
 from examples.Scenario2 import Scenario2
@@ -31,14 +31,20 @@ class Map(Widget):
     OCCUPIED = 'x'
     VISIBLE = '.'
     START = 'S'
-    POSITION = 'P'
+    OWN = '0'
+    ENEMY_1 = '1'
+    ENEMY_2 = '2'
+    ENEMY_3 = '3'
 
     colors = {
         EMPTY: (1, 1, 1),
         OCCUPIED: (0, 0, 0),
         VISIBLE: (1, 0.945, 0.008),
         START: (0, 1, 0),
-        POSITION: (1, 0, 0)
+        OWN: (1, 0, 0),
+        ENEMY_1: (0.900, 0.300, 0.900),
+        ENEMY_2: (0.800, 0.800, 0.200),
+        ENEMY_3: (0.350, 0.950, 0.930)
     }
 
     fields = []
@@ -51,6 +57,14 @@ class Map(Widget):
             for i in range(len(self.fields)):
                 for j in range(len(self.fields[i])):
                     self.draw_field(i, j)
+
+    def clear(self):
+        for i in range(len(self.fields)):
+            for j in range(len(self.fields[i])):
+                    if self.fields[i][j] not in [" ", "x"]:
+                        self.fields[i][j] = " "
+        self.draw()
+
 
     def draw_field(self, i, j):
         # Picking color
@@ -113,19 +127,24 @@ class AcoApp(App):
         simulation.start(self)
 
     def test(self):
+        self.__clear_map()
         simulation = Simulation(self.scenarios[self.scenario], self.test_iteration_finished, 1)
         simulation.start(self)
 
     def result(self, simulation):
-        path = simulation.best_solution()
-        if len(path) > 0:
-            last_x, last_y = (path[0].x, path[0].y)
-            for field in path:
-                self.fields[last_x][last_y] = Map.EMPTY
-                self.fields[field.x][field.y] = Map.POSITION
-                last_x, last_y = (field.x, field.y)
+        paths = simulation.solution()
+        symbols = ["0","1","2","3"]
+        last_x, last_y = [0]*len(paths), [0]*len(paths)
+        if 0 < len(paths) <= len(symbols):
+            for field in range(len(paths[0])):
+                for w in range(len(paths)):
+                    if field > 0:
+                        self.fields[last_x[w]][last_y[w]] = Map.EMPTY
+                    last_x[w], last_y[w] = paths[w][field].x, paths[w][field].y
+                    self.fields[paths[w][field].x][paths[w][field].y] = symbols[w]
+                    last_x[w], last_y[w] = (paths[w][field].x, paths[w][field].y)
                 self.__generate_graphics()
-                time.sleep(0.25)
+                time.sleep(0.5)
 
     def training_iteration_finished(self, iteration, length):
         self.iteration = iteration + 1
@@ -141,6 +160,9 @@ class AcoApp(App):
 
     def run_test(self):
         _thread.start_new_thread(self.test, ())
+
+    def __clear_map(self):
+        self.m.map.clear()
 
     def __generate_graphics(self):
         self.m.map.set_fields(self.fields)

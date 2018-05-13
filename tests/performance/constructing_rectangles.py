@@ -1,9 +1,9 @@
 import random
 import time
 
-from model.Field import Field
-from model.LightMap import LightMap
-from model.Rectangle import Rectangle
+from model.field import Field
+from model.lightMap import LightMap
+from model.rectangle import Rectangle
 
 start = time.clock()
 

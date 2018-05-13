@@ -2,9 +2,9 @@ import time
 
 from mock.mock import self
 
-from model.Field import Field
-from model.Point import Point
-from model.View import ViewGenerator
+from model.field import Field
+from model.point import Point
+from model.view import ViewGenerator
 from examples.Scenario1 import Scenario1
 
 start = time.time()

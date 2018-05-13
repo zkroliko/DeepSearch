@@ -2,11 +2,11 @@ import unittest
 
 from unittest.mock import MagicMock
 
-from model.Area import Area
-from model.Field import Field
-from model.Point import Point
-from model.Ray import Ray
-from model.Rectangle import Rectangle
+from model.area import Area
+from model.field import Field
+from model.point import Point
+from model.ray import Ray
+from model.rectangle import Rectangle
 
 
 class TestRay(unittest.TestCase):

@@ -1,7 +1,7 @@
 from collections import Set
 
-from model.Rectangle import Rectangle
-from model.Field import Field
+from model.rectangle import Rectangle
+from model.field import Field
 
 
 def load_from_file(filename, area, symbol):

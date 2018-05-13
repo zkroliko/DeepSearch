@@ -1,13 +1,13 @@
 import hashlib
 
-from model.Corner import Corner, CornerType
-from model.Field import FieldType, Field
+from model.corner import Corner, CornerType
+from model.field import FieldType, Field
 
 import numpy as np
 
 # Rectangle is identified by two fields at the end of it's diagonal
-from model.Point import Point
-from model.TwoCoordinate import TwoCoordinate
+from model.point import Point
+from model.twoCoordinate import TwoCoordinate
 
 
 class Rectangle():

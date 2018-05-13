@@ -1,8 +1,8 @@
-from model.LightMap import LightMap
-from model.Rectangle import Rectangle
-from model.Field import Field
-from model.Area import Area
-from model.View import ViewGenerator
+from model.lightMap import LightMap
+from model.rectangle import Rectangle
+from model.field import Field
+from model.area import Area
+from model.view import ViewGenerator
 
 
 class Printer:

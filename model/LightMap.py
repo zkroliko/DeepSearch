@@ -3,8 +3,8 @@ from enum import Enum
 import bitarray as bitarray
 import numpy as np
 
-from model.Point import Point
-from model.Ray import Ray
+from model.point import Point
+from model.ray import Ray
 
 
 class LightMap:

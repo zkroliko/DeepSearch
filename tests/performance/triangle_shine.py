@@ -1,7 +1,7 @@
 import time
 
-from model.Point import Point
-from model.View import ViewGenerator
+from model.point import Point
+from model.view import ViewGenerator
 from examples.Scenario1 import Scenario1
 from examples.Scenario3 import Scenario3
 from examples.Scenario4 import Scenario4

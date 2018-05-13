@@ -1,7 +1,7 @@
-from model.Area import Area
-from model.LightMap import LightMap
-from model.Rectangle import Rectangle
-from model.Field import Field, FieldType
+from model.area import Area
+from model.lightMap import LightMap
+from model.rectangle import Rectangle
+from model.field import Field, FieldType
 
 import unittest
 

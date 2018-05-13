@@ -1,6 +1,6 @@
 import time
 
-from model.Simulation import Simulation
+from model.simulation import Simulation
 from examples.Scenario2 import Scenario2
 
 start = time.clock()

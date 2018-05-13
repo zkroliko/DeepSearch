@@ -2,7 +2,7 @@ import copy
 
 from enum import Enum
 
-from model.TwoCoordinate import TwoCoordinate
+from model.twoCoordinate import TwoCoordinate
 
 
 # Used for distinguishing empty and inaccessible fields
@@ -37,7 +37,7 @@ class Field(TwoCoordinate):
     # See the rectangle method confine(self)
     def confine(self):
         # We are using copy because the new rectangle is just a tool
-        from model.Rectangle import Rectangle
+        from model.rectangle import Rectangle
         return Rectangle(copy.copy(self), copy.copy(self)).confine()
 
     def __str__(self):

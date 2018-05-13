@@ -1,4 +1,4 @@
-from model.TwoCoordinate import TwoCoordinate
+from model.twoCoordinate import TwoCoordinate
 from model.utils.FloatUtils import is_close
 
 

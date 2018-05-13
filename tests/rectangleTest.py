@@ -1,9 +1,9 @@
 import unittest
 
-from model.Area import Area
-from model.Point import Point
-from model.Rectangle import Rectangle
-from model.Field import Field, FieldType
+from model.area import Area
+from model.point import Point
+from model.rectangle import Rectangle
+from model.field import Field, FieldType
 
 
 class TestRectangle(unittest.TestCase):

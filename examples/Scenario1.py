@@ -1,6 +1,6 @@
-from model.Area import Area
-from model.Field import Field, FieldType
-from model.Rectangle import Rectangle
+from model.area import Area
+from model.field import Field, FieldType
+from model.rectangle import Rectangle
 
 
 class Scenario1:

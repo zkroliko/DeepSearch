@@ -1,10 +1,10 @@
 import time
 
-from model.Field import Field
-from model.Move import Move
+from model.field import Field
+from model.move import Move
 
-from model.Field import Field
-from model.Rectangle import Rectangle
+from model.field import Field
+from model.rectangle import Rectangle
 
 start = time.time()
 

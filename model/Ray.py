@@ -1,9 +1,9 @@
 import math
 
-from model.Field import Field
-from model.Rectangle import Rectangle
-from model.TwoCoordFloat import TwoCoordFloat
-from model.TwoCoordinate import TwoCoordinate
+from model.field import Field
+from model.rectangle import Rectangle
+from model.twoCoordFloat import TwoCoordFloat
+from model.twoCoordinate import TwoCoordinate
 
 import numpy as np
 

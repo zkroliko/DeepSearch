@@ -2,8 +2,8 @@ import time
 
 from multiprocessing import freeze_support
 
-from model.Point import Point
-from model.View import ViewGenerator
+from model.point import Point
+from model.view import ViewGenerator
 from examples.Scenario1 import Scenario1
 from examples.Scenario2 import Scenario2
 from examples.Scenario3 import Scenario3
