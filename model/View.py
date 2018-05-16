@@ -7,8 +7,8 @@ import numpy as np
 from model.point import Point
 from model.lightMap import LightMap
 from model.ray import Ray
-from model.utils.TriangleArea import triangle_area
-from model.utils.TriangleRasterization import rasterize_triangle
+from model.utils.triangle_area import triangle_area
+from model.utils.triangle_rasterization import rasterize_triangle
 
 
 class ViewGenerator():

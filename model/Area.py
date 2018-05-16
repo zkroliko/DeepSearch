@@ -178,18 +178,11 @@ class Area:
             rect = self.rectangle_of(target.x, target.y)
             # Everything ok
             if rect:
-                if rect.type == FieldType.empty:
+                if rect.type != FieldType.inaccessible:
                     return True
                 else:
                     return False
-            # So we got none
-            # That can mean that there only one type
-            # in the map, if it's inaccessible then we are ok
-            # because we are on empty field
-            if self.IS_SINGLE_TYPE and self.EXISTING_TYPE == FieldType.inaccessible:
-                return True
-            else:
-                return False
+            return True
 
 
 def is_power2(num):

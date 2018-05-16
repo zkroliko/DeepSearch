@@ -65,10 +65,10 @@ class Map(Widget):
                         self.fields[i][j] = " "
         self.draw()
 
-
     def draw_field(self, i, j):
         # Picking color
-        c = self.colors[self.fields[i][j]]
+        symbol = self.fields[i][j]
+        c = self.colors[symbol]
         Color(c[0], c[1], c[2])
 
         qnt_x = len(self.fields[0])
@@ -82,8 +82,11 @@ class Map(Widget):
         elif qnt_x <= qnt_y:
             # scenes width is always greater than height
             size = (win_h / qnt_y)
+            # Scaling down the enemies
+            element_size = (size * 0.8) if symbol in ["1", "2", "3"] else size
             center = (win_w - (size * qnt_x)) / 2
-            Rectangle(pos=(j * size + center, (self.get_top() + 500 - size) - (i * size)), size=(size, size))
+            Rectangle(pos=(j * size + center, (self.get_top() + 500 - size) - (i * size)),
+                      size=(element_size, element_size))
 
 
 class AppScreen(Widget):
@@ -133,16 +136,14 @@ class AcoApp(App):
 
     def result(self, simulation):
         paths = simulation.solution()
-        symbols = ["0","1","2","3"]
+        symbols = ["1","2","3","0"]
         last_x, last_y = [0]*len(paths), [0]*len(paths)
         if 0 < len(paths) <= len(symbols):
             for field in range(len(paths[0])):
-                for w in range(len(paths)):
-                    if field > 0:
-                        self.fields[last_x[w]][last_y[w]] = Map.EMPTY
-                    last_x[w], last_y[w] = paths[w][field].x, paths[w][field].y
-                    self.fields[paths[w][field].x][paths[w][field].y] = symbols[w]
-                    last_x[w], last_y[w] = (paths[w][field].x, paths[w][field].y)
+                # Clearing the whole thing
+                self.__clear_map()
+                for w, s in enumerate(symbols):
+                    self.fields[paths[w][field].x][paths[w][field].y] = s
                 self.__generate_graphics()
                 time.sleep(0.5)
 

@@ -1,5 +1,5 @@
 from model.twoCoordinate import TwoCoordinate
-from model.utils.FloatUtils import is_close
+from model.utils.float_utils import is_close
 
 
 class TwoCoordFloat(TwoCoordinate):

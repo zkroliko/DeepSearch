@@ -1,6 +1,6 @@
 import time
 
-import model.utils.TriangleRasterization as tr
+import model.utils.triangle_rasterization as tr
 import numpy as np
 
 start = time.time()

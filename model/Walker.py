@@ -1,8 +1,9 @@
 import numpy as np
 
-from model.Field import Field
-from model.Move import Move
-from model.View import ViewGenerator
+from model.field import Field
+from model.move import Move
+from model.view import ViewGenerator
+from model.empty_view import EmptyView
 
 
 class Walker:
@@ -13,7 +14,10 @@ class Walker:
         self.area = area
         self.checker = Walker.StepChecker(area)
         self.decider = decision_maker
-        self.view = ViewGenerator(area, shadow_map)
+        if shadow_map:
+            self.view = ViewGenerator(area, shadow_map)
+        else:
+            self.view = EmptyView(area)
         # Setting the start position
         if area.is_field_accessible(start):
             self.position = start
@@ -25,12 +29,12 @@ class Walker:
         return self.checker.can_make(Move(self.position, target))
 
     def finished(self):
-        return self.view.lm.finished()
+        return self.view.finished()
 
     def step(self, target=None):
         possible = []
         for i, j in self.MOVES:
-            if not (self.position.x + i < 0 or self.position.y + j < 0):
+            if self.position.x + i >= 0 and self.position.y + j >= 0:
                 candidate_move = Move(self.position, Field(self.position.x + i, self.position.y + j))
                 if self.checker.can_make(candidate_move):
                     possible.append(candidate_move)
@@ -40,7 +44,7 @@ class Walker:
         # We can initially update out light map based on possible moves - but a max of 9
         self.view.react_to_new_place(possible)
         # Asking the decision maker for move
-        next_move = self.decider.decide(possible)
+        next_move = self.decider.decide(possible,self.position)
         # Making the move
         self.change_position(next_move.target)
 

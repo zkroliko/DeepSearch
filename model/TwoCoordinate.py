@@ -25,3 +25,6 @@ class TwoCoordinate:
 
     def __hash__(self):
         return hash(self.x ^ self.y)
+
+    def tuple(self):
+        return self.x, self.y

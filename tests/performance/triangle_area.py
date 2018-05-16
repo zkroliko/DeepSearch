@@ -1,6 +1,6 @@
 import time
 
-from model.utils.TriangleArea import aprox_triangle_area, triangle_area
+from model.utils.triangle_area import aprox_triangle_area, triangle_area
 
 triangles = [
     [[0, 0], [5, 0], [0, 5]],
