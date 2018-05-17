@@ -4,6 +4,7 @@ from model.decision_makers.target_behaviour import TargetBehaviour
 from model.utils.choiceUtils import weighted_random
 
 
-class RunAwayBehaviour(TargetBehaviour):
+class CircleLeftBehaviour(TargetBehaviour):
 
-    TRANSFORM_VECTOR = np.array([[-1, -1], [0, 0]])
+    TRANSFORM_VECTOR = np.array([[0, -1], [1, 0]])
+

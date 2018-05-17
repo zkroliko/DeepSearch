@@ -8,7 +8,7 @@ class TargetBehaviour:
 
     RANDOM_COEFF = 3
 
-    SHIFT_VECTOR = None
+    TRANSFORM_VECTOR = None
 
     def __init__(self, target=None):
         self.target = target
@@ -18,7 +18,7 @@ class TargetBehaviour:
 
     def decide(self, possible_moves, position=None):
         tv = self._vector_to_target(position)
-        dot_products = [np.dot(list(move.vector * self.SHIFT_VECTOR), tv) for move in possible_moves]
+        dot_products = [np.dot(list(move.vector @ self.TRANSFORM_VECTOR), tv) for move in possible_moves]
         # We want to introduce some noise
         dot_products += (np.random.rand(len(dot_products))*2-1.0)*self.RANDOM_COEFF
         dot_products = list(dot_products)

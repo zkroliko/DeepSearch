@@ -6,5 +6,5 @@ from model.utils.choiceUtils import weighted_random
 
 class FollowBehaviour(TargetBehaviour):
 
-    SHIFT_VECTOR = np.array([1,1])
+    TRANSFORM_VECTOR = np.array([[1,0],[1,0]])
 
