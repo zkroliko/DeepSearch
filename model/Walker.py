@@ -14,6 +14,8 @@ class Walker:
         self.area = area
         self.checker = Walker.StepChecker(area)
         self.decider = decision_maker
+        self.alive = True
+        self.won_unexpectedly = False
         if shadow_map:
             self.view = ViewGenerator(area, shadow_map)
         else:
@@ -29,7 +31,7 @@ class Walker:
         return self.checker.can_make(Move(self.position, target))
 
     def finished(self):
-        return self.view.finished()
+        return self.view.finished() and self.alive and not self.won_unexpectedly
 
     def step(self, target=None):
         possible = []
