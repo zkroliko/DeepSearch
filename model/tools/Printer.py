@@ -11,7 +11,6 @@ class Printer:
     OCCUPIED = 'x'
     VISIBLE = '.'
     START = 'S'
-    POSITION = 'P'
 
     def __init__(self, area):
         self.area = area
@@ -36,9 +35,9 @@ class Printer:
         if isinstance(field, Field):
             self.fields[field.x][field.y] = self.START
 
-    def set_position(self, field):
+    def set_position(self, field, symbol):
         if isinstance(field, Field):
-            self.fields[field.x][field.y] = self.POSITION
+            self.fields[field.x][field.y] = symbol
 
     def fill_rectangle(self, rect, symbol):
         for i in range(rect.start.x, rect.end.x+1):

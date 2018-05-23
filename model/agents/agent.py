@@ -6,32 +6,25 @@ from model.view import ViewGenerator
 from model.empty_view import EmptyView
 
 
-class Walker:
+class Agent:
     # Moves we can make
     MOVES = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1), (0, 0)]
 
-    def __init__(self, area, start, decision_maker, shadow_map=None):
+    def __init__(self, area, start, decision_maker, symbol="x"):
         self.area = area
-        self.checker = Walker.StepChecker(area)
+        self.checker = Agent.StepChecker(area)
         self.decider = decision_maker
-        self.alive = True
-        self.won_unexpectedly = False
-        if shadow_map:
-            self.view = ViewGenerator(area, shadow_map)
-        else:
-            self.view = EmptyView(area)
+        self.symbol = symbol
+        self.path = []
         # Setting the start position
         if area.is_field_accessible(start):
             self.position = start
-            self.path = [start]
+            self.path.append(self.position)
         else:
             raise Exception("Cannot place walker on the given field")
 
     def can_step(self, target):
         return self.checker.can_make(Move(self.position, target))
-
-    def finished(self):
-        return self.view.finished() and self.alive and not self.won_unexpectedly
 
     def step(self, target=None):
         possible = []
@@ -42,22 +35,27 @@ class Walker:
                     possible.append(candidate_move)
         # Check if we are not blocked
         if possible.__len__() == 0:
-            raise Exception("Walker cannot make any moves from field %s" % (self.position))
+            raise Exception("Agent cannot make any moves from field %s" % (self.position))
         # We can initially update out light map based on possible moves - but a max of 9
-        self.view.react_to_new_place(possible)
+        self.react_to_new_place(possible)
         # Asking the decision maker for move
-        next_move = self.decider.decide(possible,self.position)
+        next_move = self.decider.decide(possible, self.position)
         # Making the move
         self.change_position(next_move.target)
 
         return self.position
 
-    def change_position(self, target):
-        if self.can_step(target):
+    def react_to_new_place(self, possible):
+        pass
+
+    def change_position(self, target, no_checks=False):
+        if self.can_step(target) or no_checks:
             self.position = target
             self.path.append(self.position)
         else:
             raise Exception("Cannot step on the given field")
+
+
 
     # Inner class
     class StepChecker:

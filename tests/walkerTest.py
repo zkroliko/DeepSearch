@@ -1,24 +1,23 @@
 import unittest
 
+from model.agents.agent import Agent
 from model.area import Area
 from model.decision_makers.random_behaviour import RandomBehaviour
-from model.lightMap import LightMap
-from model.rectangle import Rectangle
 from model.field import Field, FieldType
-from model.walker import Walker
+from model.rectangle import Rectangle
 
 
 class TestWalker(unittest.TestCase):
     def test_init(self):
         a = Area(Rectangle(Field(0, 0), Field(15, 15)), 2)
-        w = Walker(a, Field(3, 3), decision_maker=RandomBehaviour())
+        w = Agent(a, Field(3, 3), decision_maker=RandomBehaviour())
         self.assertNotEqual(w, None)
         self.assertEqual(w.area, a)
 
     def test_place(self):
         start = Field(3, 3)
         a = Area(Rectangle(Field(0, 0), Field(15, 15)), 2)
-        w = Walker(a, start, RandomBehaviour())
+        w = Agent(a, start, RandomBehaviour())
         self.assertTrue(w.position, start)
         bad_start = Field(323233223, 3322332)
         with self.assertRaises(Exception):
@@ -26,7 +25,7 @@ class TestWalker(unittest.TestCase):
 
     def test_can_step(self):
         a = Area(Rectangle(Field(0, 0), Field(15, 15)), 2)
-        w = Walker(a, Field(3, 3), RandomBehaviour())
+        w = Agent(a, Field(3, 3), RandomBehaviour())
         a += Rectangle(Field(0, 0), Field(5, 2), type=FieldType.inaccessible)
         a += Rectangle(Field(0, 3), Field(2, 7), type=FieldType.inaccessible)
         positions = {
@@ -78,7 +77,7 @@ class TestWalker(unittest.TestCase):
         test_rectangle2 = Rectangle(Field(2, 2), Field(6, 6))
         test_rectangle3 = Rectangle(Field(1, 1), Field(7, 7))
 
-        walker = Walker(a, start, pm)
+        walker = Agent(a, start, pm)
         walker.step()
         self.assertTrue(walker.position in test_rectangle1)
         walker.step()

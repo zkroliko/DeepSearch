@@ -1,15 +1,20 @@
 import sys
 
 class SolutionHolder:
+
+    DEATH_PUNISHMENT = -1
+
     def __init__(self):
         self.path = None
-        self.length = sys.maxsize
+        self.bast_reward = sys.maxsize
 
-    def record_solution(self, walker):
+    def assess_solution(self, walker):
         new_length = self.calc_length(walker.path)
-        if new_length < self.length:
+        reward = 1.0 / new_length if not walker.dead else self.DEATH_PUNISHMENT
+        if reward < self.bast_reward:
             self.path = walker.path
-            self.length = new_length
+            self.bast_reward = reward
+        return reward
 
     def calc_length(self, path):
         return len(path)

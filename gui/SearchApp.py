@@ -1,24 +1,20 @@
-import sys
-import time
-from threading import Thread
-
 import _thread
+import time
+
 import kivy
 from kivy.app import App
 from kivy.core.window import Window
 from kivy.graphics.context_instructions import Color
 from kivy.graphics.vertex_instructions import Rectangle
-from kivy.properties import ObjectProperty, NumericProperty
+from kivy.properties import ObjectProperty, NumericProperty, StringProperty
 from kivy.uix.widget import Widget
 from kivy.uix.settings import SettingsWithTabbedPanel
 
-from model.simulation import Simulation
-from model.walker import Walker
-from model.tools.Printer import Printer
 from examples.Scenario1 import Scenario1
 from examples.Scenario2 import Scenario2
 from examples.Scenario3 import Scenario3
 from examples.Scenario4 import Scenario4
+from model.simulation import Simulation
 
 kivy.require('1.10.0')  # replace with your current kivy version !
 
@@ -31,10 +27,10 @@ class Map(Widget):
     OCCUPIED = 'x'
     VISIBLE = '.'
     START = 'S'
-    OWN = '0'
-    ENEMY_1 = '1'
-    ENEMY_2 = '2'
-    ENEMY_3 = '3'
+    OWN = 'W'
+    ENEMY_1 = '0'
+    ENEMY_2 = '1'
+    ENEMY_3 = '2'
 
     colors = {
         EMPTY: (1, 1, 1),
@@ -61,8 +57,8 @@ class Map(Widget):
     def clear(self):
         for i in range(len(self.fields)):
             for j in range(len(self.fields[i])):
-                    if self.fields[i][j] not in [" ", "x"]:
-                        self.fields[i][j] = " "
+                if self.fields[i][j] not in [" ", "x"]:
+                    self.fields[i][j] = " "
         self.draw()
 
     def draw_field(self, i, j):
@@ -83,7 +79,7 @@ class Map(Widget):
             # scenes width is always greater than height
             size = (win_h / qnt_y)
             # Scaling down the enemies
-            element_size = (size * 0.8) if symbol in ["1", "2", "3"] else size
+            element_size = (size * 0.8) if symbol in ["0", "1", "2"] else size
             center = (win_w - (size * qnt_x)) / 2
             Rectangle(pos=(j * size + center, (self.get_top() + 500 - size) - (i * size)),
                       size=(element_size, element_size))
@@ -98,9 +94,12 @@ class AppScreen(Widget):
 
 
 class AcoApp(App):
+
     def build(self):
         self.m = AppScreen()
         self.fields = []
+        self.last_sim = None
+        self.best_score = "0"
         self.iterations = int(self.config.get('Parameters', 'iterations'))
         self.all_iterations = self.iterations
         self.scenario = str(self.config.get('Parameters', 'scenarios'))
@@ -117,11 +116,11 @@ class AcoApp(App):
     grid = ObjectProperty(None)
     iteration = NumericProperty(0)
     all_iterations = NumericProperty(0)
-    path_length = NumericProperty(0)
+    best_score = StringProperty("")
 
     def generate(self):
         simulation = Simulation(self.scenarios[self.scenario], n_iterations=1)
-        self.fields = simulation.get_fields()
+        self.fields = simulation.get_map()
         self.__generate_graphics()
         return simulation
 
@@ -134,27 +133,27 @@ class AcoApp(App):
         simulation = Simulation(self.scenarios[self.scenario], self.test_iteration_finished, 1)
         simulation.start(self)
 
-    def result(self, simulation):
-        paths = simulation.solution()
-        symbols = ["1","2","3","0"]
-        last_x, last_y = [0]*len(paths), [0]*len(paths)
-        if 0 < len(paths) <= len(symbols):
-            for field in range(len(paths[0])):
-                # Clearing the whole thing
-                self.__clear_map()
-                for w, s in enumerate(symbols):
-                    self.fields[paths[w][field].x][paths[w][field].y] = s
+    def commit_sim_data(self, simulation):
+        self.last_sim = simulation
+
+    def play(self, simulation=None):
+        if not simulation:
+            simulation = self.last_sim # Replay
+        if simulation:
+            map_images = simulation.agent_moves()
+            for map in map_images:
+                self.fields = map
                 self.__generate_graphics()
-                time.sleep(0.5)
+                time.sleep(0.2)
 
-    def training_iteration_finished(self, iteration, length):
+    def training_iteration_finished(self, iteration, score):
         self.iteration = iteration + 1
-        if length < self.path_length or self.path_length == 0:
-            self.path_length = length
+        if score > float(self.best_score):
+            self.best_score = "{0:.3f}".format(score)
 
-    def test_iteration_finished(self, iteration, length):
-        if length < self.path_length or self.path_length == 0:
-            self.path_length = length
+    def test_iteration_finished(self, iteration, score):
+        if score > float(self.best_score):
+            self.best_score = "{0:.3f}".format(score)
 
     def run_training(self):
         _thread.start_new_thread(self.train, ())
@@ -182,7 +181,7 @@ class AcoApp(App):
         if config is self.config:
             token = (section, key)
             self.iteration = 0
-            self.path_length = 0
+            self.best_score = 0
             if token == ('Parameters', 'Iterations'):
                 self.iterations = int(value)
                 print("Number of iterations has been changed to ", int(value))

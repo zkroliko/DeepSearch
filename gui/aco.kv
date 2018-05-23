@@ -20,12 +20,12 @@ AppScreen:
         font_size: 18
         center_x: root.width / 13
         top: root.top - 75
-        text: "Path length: "
+        text: "Best reward: "
     Label:
         font_size: 18
         center_x: root.width / 13
         top: root.top - 95
-        text: str(app.path_length)
+        text: str(app.best_score)
 
 <Menu@BoxLayout>:
     BoxLayout:
@@ -43,3 +43,7 @@ AppScreen:
             text: "Test"
             size_hint_x: 25
             on_release: app.run_test()
+        Button:
+            text: "Replay"
+            size_hint_x: 25
+            on_release: app.play()

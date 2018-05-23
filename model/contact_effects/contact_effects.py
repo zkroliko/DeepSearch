@@ -1,25 +1,27 @@
-from model.utils.positioningUtil import random_field
-
-
-class DestroyEffect:
-    def __init(self, position_generator):
+class Effect:
+    def __init__(self, position_generator):
         self.generator = position_generator
+
+
+class KillEffect(Effect):
+    def __init__(self, position_generator):
+        super().__init__(position_generator)
 
     def apply(self, walker):
-        walker.alive = False
+        walker.dead = True
 
 
-class WinEffect:
-    def __init(self, position_generator):
-        self.generator = position_generator
+class WinEffect(Effect):
+    def __init__(self, position_generator):
+        super().__init__(position_generator)
 
     def apply(self, walker):
         walker.won_unexpectedly = True
 
 
-class TransportEffect:
-    def __init(self, position_generator):
-        self.generator = position_generator
+class TransportEffect(Effect):
+    def __init__(self, position_generator):
+        super().__init__(position_generator)
 
     def apply(self, walker):
-        walker.position = self.generator()
+        walker.change_position(self.generator(walker.area, walker.position), no_checks=True)
