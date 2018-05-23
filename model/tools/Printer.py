@@ -3,13 +3,13 @@ from model.rectangle import Rectangle
 from model.field import Field
 from model.area import Area
 from model.view import ViewGenerator
-
+import numpy as np
 
 class Printer:
 
     EMPTY = ' '
     OCCUPIED = 'x'
-    VISIBLE = '.'
+    SHADOW = '.'
     START = 'S'
 
     def __init__(self, area):
@@ -25,11 +25,11 @@ class Printer:
                 self.fill_rectangle(r, self.OCCUPIED)
             pass
 
-    def set_view(self, view):
-        if isinstance(view, LightMap):
-            for field in view.seen:
-                if 0 <= field[0] < self.dimension and 0 <= field[1] < self.dimension:
-                    self.fields[field[0]][field[1]] = self.VISIBLE
+    def set_view(self, shadow_map):
+        if isinstance(shadow_map, np.ndarray):
+            for index, val in np.ndenumerate(shadow_map):
+                if val:
+                    self.fields[index[0]][index[1]] = self.SHADOW
 
     def set_start(self, field):
         if isinstance(field, Field):

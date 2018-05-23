@@ -19,6 +19,7 @@ class Agent:
         # Setting the start position
         if area.is_field_accessible(start):
             self.position = start
+            self.react_to_new_place()
             self.path.append(self.position)
         else:
             raise Exception("Cannot place walker on the given field")
@@ -36,16 +37,16 @@ class Agent:
         # Check if we are not blocked
         if possible.__len__() == 0:
             raise Exception("Agent cannot make any moves from field %s" % (self.position))
-        # We can initially update out light map based on possible moves - but a max of 9
-        self.react_to_new_place(possible)
         # Asking the decision maker for move
         next_move = self.decider.decide(possible, self.position)
         # Making the move
         self.change_position(next_move.target)
+        # We can initially update out light map based on possible moves - but a max of 9
+        self.react_to_new_place()
 
         return self.position
 
-    def react_to_new_place(self, possible):
+    def react_to_new_place(self):
         pass
 
     def change_position(self, target, no_checks=False):

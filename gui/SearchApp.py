@@ -25,7 +25,7 @@ settings_height = 40
 class Map(Widget):
     EMPTY = ' '
     OCCUPIED = 'x'
-    VISIBLE = '.'
+    HIDDEN = '.'
     START = 'S'
     OWN = 'W'
     ENEMY_1 = '0'
@@ -35,7 +35,7 @@ class Map(Widget):
     colors = {
         EMPTY: (1, 1, 1),
         OCCUPIED: (0, 0, 0),
-        VISIBLE: (1, 0.945, 0.008),
+        HIDDEN: (0.4, 0.4, 0.4),
         START: (0, 1, 0),
         OWN: (1, 0, 0),
         ENEMY_1: (0.900, 0.300, 0.900),
