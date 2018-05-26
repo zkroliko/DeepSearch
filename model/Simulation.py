@@ -49,9 +49,8 @@ class Simulation:
         self.path_file = self.DEFAULT_OPTIMIZED_FILE
         self.sh = SolutionHolder()
         self.global_track = []
-        self.opponent_config = []
-        self.enemies = self._configure_enemies()
-        print("Generated {} opponents".format(self.N_OPPONENTS))
+        self.enemies_config = self._configure_enemies()
+        print("Configured {} opponents".format(self.N_OPPONENTS))
 
     def get_fields(self, actors, walker):
         printer = Printer(self.scenario.area())
@@ -98,8 +97,8 @@ class Simulation:
                 print("Shadow map saved")
             for iteration in range(self.n_iterations):
                 w = Walker(self.scenario.area(), self.scenario.start(), random_behaviour.RandomBehaviour(), shadow_map)
-                self.enemies = self._generate_enemies(self.enemies, w)
-                actors = [w]+self.enemies
+                enemies = self._generate_enemies(self.enemies_config, w)
+                actors = [w]+enemies
                 start = time.time()
                 self.global_track.clear()
                 while not w.finished():
@@ -107,7 +106,7 @@ class Simulation:
                     w.step()
                     self.track(actors, w)
                     # Walker steps
-                    for e in self.enemies:
+                    for e in enemies:
                         # We need to check both before and after their moves
                         e.check_effect(w)
                         if not w.dead:
@@ -128,7 +127,7 @@ class Simulation:
 
             if self.n_iterations == 1:
                 app.commit_sim_data(self)
-                app.play()
+                app.play(self)
             print("# Best solution's score is %s" % self.sh.bast_reward)
             print("# Best solution is %s" % self.sh.path_to_str())
             print("Iteration progress saved in {}".format(self.result_file))
