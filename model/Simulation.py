@@ -1,43 +1,87 @@
+import os.path
 import pickle
+import random
 import sys
 import time
-import os.path
 
-import math
-
-from model.LightMap import LightMap
-from model.Walker import Walker
-from model.decision_makers import randomDecision
-from model.tools.Printer import Printer
 from examples.Scenario1 import Scenario1
+from model.SolutionHolder import SolutionHolder
+from model.agents.enemy import Enemy
+from model.agents.walker import Walker
+from model.contact_effects.contact_effects import TransportEffect, WinEffect, KillEffect
+from model.decision_makers import random_behaviour
+from model.decision_makers.circle_left_behaviour import CircleLeftBehaviour
+from model.decision_makers.circle_right_behaviour import CircleRightBehaviour
+from model.decision_makers.follow_behaviour import FollowBehaviour
+from model.decision_makers.random_behaviour import RandomBehaviour
+from model.decision_makers.run_away_behaviour import RunAwayBehaviour
+from model.decision_makers.stand_behaviour import StandBehaviour
+from model.field import Field
+from model.lightMap import LightMap
+from model.tools.Printer import Printer
+from model.utils.positioningUtil import random_field
+
 
 class Simulation:
-
     DEFAULT_SCENARIO = Scenario1
     DEFAULT_N_ITERATIONS = 400
 
     DEFAULT_RESULTS_FILE = "iteration_results.csv"
     DEFAULT_OPTIMIZED_FILE = "best_path.csv"
 
+    N_OPPONENTS = 3
+
+    decision_makers = [RandomBehaviour, StandBehaviour, FollowBehaviour, RunAwayBehaviour,
+                       CircleLeftBehaviour, CircleRightBehaviour]
+
+    contact_effects = [KillEffect, WinEffect, TransportEffect]
 
     # Algorithm specific
 
-    def __init__(self, scenario=DEFAULT_SCENARIO, on_iteration=(lambda x,y: None), n_iterations=DEFAULT_N_ITERATIONS,):
+    def __init__(self, scenario=DEFAULT_SCENARIO, on_iteration=(lambda x, y: None),
+                 n_iterations=DEFAULT_N_ITERATIONS, ):
         self.scenario = scenario
         self.on_iteration = on_iteration
-        self.shadow_file_name = str(self.scenario.name())+"shadow_map"
+        self.shadow_file_name = str(self.scenario.name()) + "shadow_map"
         self.n_iterations = n_iterations
         self.iteration = 0
         self.result_file = self.DEFAULT_RESULTS_FILE
         self.path_file = self.DEFAULT_OPTIMIZED_FILE
-        self.sh = self.SolutionHolder()
+        self.sh = SolutionHolder()
+        self.global_track = []
+        self.opponent_config = []
+        self.enemies = self._configure_enemies()
+        print("Generated {} opponents".format(self.N_OPPONENTS))
 
-    def get_fields(self):
+    def get_fields(self, actors, walker):
         printer = Printer(self.scenario.area())
-        printer.set_start(self.scenario.start())
+        printer.set_view(shadow_map=walker.view.lm.to_discover)
+        for actor in actors:
+            printer.set_position(actor.position, actor.symbol)
         return printer.fields
 
+    def get_map(self):
+        printer = Printer(self.scenario.area())
+        return printer.fields
 
+    def _configure_enemies(self):
+        enemy_config = []
+        decision_maker = random.choice(self.decision_makers)()
+        contact_effect = random.choice(self.contact_effects)(random_field)
+        for i in range(self.N_OPPONENTS):
+            enemy_config.append((decision_maker, contact_effect, str(i)))
+        return enemy_config
+
+    def _generate_enemies(self, enemy_config, main_walker):
+        # Placement
+        enemies = []
+        for d, c, s in enemy_config:
+            position = random_field(self.scenario.area(), self.scenario.start())
+            enemy = Enemy(self.scenario.area(), position, d, contact_effect=c, symbol=s)
+            # Extra info about the main walker
+            enemy.decider.target = main_walker
+            enemies.append(enemy)
+        return enemies
 
     def start(self, app):
         # For saving results
@@ -53,25 +97,39 @@ class Simulation:
                     pickle.dump(shadow_map, shadow_file)
                 print("Shadow map saved")
             for iteration in range(self.n_iterations):
+                w = Walker(self.scenario.area(), self.scenario.start(), random_behaviour.RandomBehaviour(), shadow_map)
+                self.enemies = self._generate_enemies(self.enemies, w)
+                actors = [w]+self.enemies
                 start = time.time()
-                w = Walker(self.scenario.area(), self.scenario.start(), randomDecision.RandomDecision(), shadow_map)
+                self.global_track.clear()
                 while not w.finished():
+                    # Agent step
                     w.step()
-                length = self.sh.calc_length(w.path)
+                    self.track(actors, w)
+                    # Walker steps
+                    for e in self.enemies:
+                        # We need to check both before and after their moves
+                        e.check_effect(w)
+                        if not w.dead:
+                            e.step()
+                            self.track(actors, w)
+                            e.check_effect(w)
+                            self.track(actors, w)
+                reward = self.sh.assess_solution(w)
                 # Recording data
-                self.sh.propose_solution(w)
-                data = "%s, %s" % (length, time.time() - start)
-                result_file.write(data + "\n")
-                print(data)
-                self.on_iteration(iteration, length)
-
+                data = "%s, %s" % (reward, time.time() - start)
+                alive_msg = "dead" if w.dead else "alive"
+                result_file.write(data + alive_msg + "\n")
+                print(data, alive_msg)
+                self.on_iteration(iteration, reward)
 
             printer = Printer(self.scenario.area())
             printer.set_start(self.scenario.start())
 
             if self.n_iterations == 1:
-                app.result(self)
-            print("# Best solution's length is %s" % self.sh.length)
+                app.commit_sim_data(self)
+                app.play()
+            print("# Best solution's score is %s" % self.sh.bast_reward)
             print("# Best solution is %s" % self.sh.path_to_str())
             print("Iteration progress saved in {}".format(self.result_file))
 
@@ -79,41 +137,9 @@ class Simulation:
                 path_file.write(self.sh.path_to_csv())
                 print("Best solution saved in {}".format(self.path_file))
 
+    def agent_moves(self):
+        return self.global_track
 
-    def best_solution(self):
-        return self.sh.path
-
-    class SolutionHolder:
-        def __init__(self):
-            self.path = None
-            self.length = sys.maxsize
-
-        def propose_solution(self, walker):
-            new_length = self.calc_length(walker.path)
-            if new_length < self.length:
-                self.path = walker.path
-                self.length = new_length
-
-        def calc_length(self, path):
-            # lx, ly = 0, 0
-            # len = 0
-            # for e in path:
-            #     dx, dy = abs(e.x - lx), abs(e.y - ly)
-            #     len += 1.4142 if dx + dy > 1 else 1.0
-            #     lx, ly = e.x, e.y
-            return len(path)
-
-        def path_to_str(self):
-            str = ""
-            for field in self.path:
-                str += field.__str__()
-                str += ", "
-            return str
-
-        def path_to_csv(self):
-            str = ""
-            for field in self.path:
-                str += "{},{}".format(field.x,field.y)
-                str += "\n"
-            return str
+    def track(self, actors, walker):
+        self.global_track.append(self.get_fields(actors, walker))
 

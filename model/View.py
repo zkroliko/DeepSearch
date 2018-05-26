@@ -29,12 +29,8 @@ class ViewGenerator():
         return self.lm.finished()
 
     # Adds possible moves to light map
-    def react_to_new_place(self, moves):
-        # The place in which the walker currently is
-        self.lm.look_around_at((moves[0].source.x, moves[0].source.y))
-        # The rest -> if you can move there, you can see it
-        # for move in moves:
-        #     self.lm.check((move.target.x, move.target.y))
+    def react_to_new_place(self, position):
+        self.lm.look_around_at((position.x, position.y))
 
     def shine_onto_stripe(self, source, start, end):
         for i in range(start, end + 1):

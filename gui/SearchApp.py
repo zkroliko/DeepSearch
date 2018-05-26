@@ -181,7 +181,7 @@ class AcoApp(App):
         if config is self.config:
             token = (section, key)
             self.iteration = 0
-            self.best_score = 0
+            self.best_score = "0"
             if token == ('Parameters', 'Iterations'):
                 self.iterations = int(value)
                 print("Number of iterations has been changed to ", int(value))
