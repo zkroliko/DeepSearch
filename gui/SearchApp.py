@@ -1,5 +1,6 @@
 import _thread
 import time
+from threading import Lock
 
 import kivy
 from kivy.app import App
@@ -96,6 +97,7 @@ class AppScreen(Widget):
 class AcoApp(App):
 
     def build(self):
+        self.lock = Lock()
         self.m = AppScreen()
         self.fields = []
         self.last_sim = None
@@ -129,16 +131,20 @@ class AcoApp(App):
         simulation.start(self)
 
     def test(self):
-        self.__clear_map()
-        simulation = Simulation(self.scenarios[self.scenario], self.test_iteration_finished, 1)
-        simulation.start(self)
+        if not self.lock.locked():
+            self.lock.acquire()
+            self.__clear_map()
+            simulation = Simulation(self.scenarios[self.scenario], self.test_iteration_finished, 1)
+            simulation.start(self)
+            self.lock.release()
+        else:
+            print("Cannot run tests - Test results are showing now")
 
     def commit_sim_data(self, simulation):
         self.last_sim = simulation
 
     def play(self, simulation=None):
-        if not simulation:
-            simulation = self.last_sim # Replay
+        self.last_sim = simulation
         if simulation:
             map_images = simulation.agent_moves()
             for map in map_images:
@@ -146,10 +152,24 @@ class AcoApp(App):
                 self.__generate_graphics()
                 time.sleep(0.2)
 
+    def replay(self):
+        if self.last_sim:
+            if self.lock.locked():
+                print("Cannot replay tests - Test results are showing now")
+                return
+            map_images = self.last_sim.agent_moves()
+            for map in map_images:
+                self.fields = map
+                self.__generate_graphics()
+                time.sleep(0.2)
+        else:
+            print("Nothing to replay")
+
     def training_iteration_finished(self, iteration, score):
         self.iteration = iteration + 1
         if score > float(self.best_score):
             self.best_score = "{0:.3f}".format(score)
+
 
     def test_iteration_finished(self, iteration, score):
         if score > float(self.best_score):
@@ -160,6 +180,9 @@ class AcoApp(App):
 
     def run_test(self):
         _thread.start_new_thread(self.test, ())
+
+    def run_replay(self):
+        _thread.start_new_thread(self.replay, ())
 
     def __clear_map(self):
         self.m.map.clear()
