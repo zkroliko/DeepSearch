@@ -2,7 +2,9 @@ import _thread
 import time
 from threading import Lock
 
+import collections
 import kivy
+import math
 from kivy.app import App
 from kivy.core.window import Window
 from kivy.graphics.context_instructions import Color
@@ -96,12 +98,17 @@ class AppScreen(Widget):
 
 class AcoApp(App):
 
+    LAST_REWARD_N = 20
+
     def build(self):
         self.lock = Lock()
         self.m = AppScreen()
         self.fields = []
         self.last_sim = None
-        self.best_score = "0"
+        self.best_reward = "0"
+        self.last_reward = "0"
+        self.avg_last_reward = "0"
+        self.last_rewards = collections.deque(self.LAST_REWARD_N * [0], self.LAST_REWARD_N)
         self.iterations = int(self.config.get('Parameters', 'iterations'))
         self.all_iterations = self.iterations
         self.scenario = str(self.config.get('Parameters', 'scenarios'))
@@ -118,7 +125,10 @@ class AcoApp(App):
     grid = ObjectProperty(None)
     iteration = NumericProperty(0)
     all_iterations = NumericProperty(0)
-    best_score = StringProperty("")
+    best_reward = StringProperty("")
+    last_reward = StringProperty("")
+    avg_last_reward = StringProperty("")
+
 
     def generate(self):
         simulation = Simulation(self.scenarios[self.scenario], n_iterations=1)
@@ -165,15 +175,19 @@ class AcoApp(App):
         else:
             print("Nothing to replay")
 
-    def training_iteration_finished(self, iteration, score):
+    def training_iteration_finished(self, iteration, reward):
         self.iteration = iteration + 1
-        if score > float(self.best_score):
-            self.best_score = "{0:.3f}".format(score)
+        self.commit_reward(reward)
 
+    def test_iteration_finished(self, iteration, reward):
+        self.commit_reward(reward)
 
-    def test_iteration_finished(self, iteration, score):
-        if score > float(self.best_score):
-            self.best_score = "{0:.3f}".format(score)
+    def commit_reward(self, reward):
+        self.last_reward = "{0:.3f}".format(reward)
+        self.last_rewards.append(reward)
+        self.avg_last_reward = "{0:.3f}".format(sum(self.last_rewards)/self.LAST_REWARD_N)
+        if reward > float(self.best_reward):
+            self.best_reward = "{0:.3f}".format(reward)
 
     def run_training(self):
         _thread.start_new_thread(self.train, ())
@@ -204,7 +218,9 @@ class AcoApp(App):
         if config is self.config:
             token = (section, key)
             self.iteration = 0
-            self.best_score = "0"
+            self.best_reward = "0"
+            self.last_reward = "0"
+            self.avg_last_reward = "0"
             if token == ('Parameters', 'Iterations'):
                 self.iterations = int(value)
                 print("Number of iterations has been changed to ", int(value))

@@ -20,12 +20,33 @@ AppScreen:
         font_size: 18
         center_x: root.width / 13
         top: root.top - 75
-        text: "Best reward: "
+        text: "Last reward: "
     Label:
         font_size: 18
         center_x: root.width / 13
         top: root.top - 95
-        text: str(app.best_score)
+        text: str(app.last_reward)
+    Label:
+        font_size: 18
+        center_x: root.width / 13
+        top: root.top - 135
+        text: "Avg last 20: "
+    Label:
+        font_size: 18
+        center_x: root.width / 13
+        top: root.top - 155
+        text: str(app.avg_last_reward)
+    Label:
+        font_size: 18
+        center_x: root.width / 13
+        top: root.top - 195
+        text: "Best reward: "
+    Label:
+        font_size: 18
+        center_x: root.width / 13
+        top: root.top - 215
+        text: str(app.best_reward)
+
 
 <Menu@BoxLayout>:
     BoxLayout:
