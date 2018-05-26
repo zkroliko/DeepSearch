@@ -12,13 +12,14 @@ from model.contact_effects.contact_effects import TransportEffect, WinEffect, Ki
 from model.decision_makers import random_behaviour
 from model.decision_makers.circle_left_behaviour import CircleLeftBehaviour
 from model.decision_makers.circle_right_behaviour import CircleRightBehaviour
+from model.decision_makers.deep_behaviour import DeepBehaviour
 from model.decision_makers.follow_behaviour import FollowBehaviour
 from model.decision_makers.random_behaviour import RandomBehaviour
 from model.decision_makers.run_away_behaviour import RunAwayBehaviour
 from model.decision_makers.stand_behaviour import StandBehaviour
 from model.field import Field
 from model.lightMap import LightMap
-from model.tools.Printer import Printer
+from model.tools.text_printer import TextPrinter
 from model.utils.positioningUtil import random_field
 
 
@@ -53,14 +54,14 @@ class Simulation:
         print("Configured {} opponents".format(self.N_OPPONENTS))
 
     def get_fields(self, actors, walker):
-        printer = Printer(self.scenario.area())
-        printer.set_view(shadow_map=walker.view.lm.to_discover)
+        printer = TextPrinter(self.scenario.area())
+        printer.set_view(walker.light_map.to_discover)
         for actor in actors:
             printer.set_position(actor.position, actor.symbol)
         return printer.fields
 
     def get_map(self):
-        printer = Printer(self.scenario.area())
+        printer = TextPrinter(self.scenario.area())
         return printer.fields
 
     def _configure_enemies(self):
@@ -98,6 +99,8 @@ class Simulation:
             for iteration in range(self.n_iterations):
                 w = Walker(self.scenario.area(), self.scenario.start(), random_behaviour.RandomBehaviour(), shadow_map)
                 enemies = self._generate_enemies(self.enemies_config, w)
+                # Configuring walker for deep behaviour
+                w.decider = DeepBehaviour(w, enemies)
                 actors = [w]+enemies
                 start = time.time()
                 self.global_track.clear()
@@ -122,7 +125,7 @@ class Simulation:
                 print(data, alive_msg)
                 self.on_iteration(iteration, reward)
 
-            printer = Printer(self.scenario.area())
+            printer = TextPrinter(self.scenario.area())
             printer.set_start(self.scenario.start())
 
             if self.n_iterations == 1:

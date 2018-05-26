@@ -15,7 +15,7 @@ class BinaryPrinter:
     ENEMY_3 = 4.0
     WALL = 5.0
 
-    SYMBOL_TO_VALUE = {"W": 1, "1": 1, "2": 2, "3": 3}
+    SYMBOL_TO_VALUE = {"W": 1, "0": ENEMY_1, "1": ENEMY_2, "2": ENEMY_3}
 
     def __init__(self, area):
         self.area = area
@@ -23,9 +23,9 @@ class BinaryPrinter:
         self.fields = np.zeros(shape=(self.dimension, self.dimension), dtype=int)
         self.fill_rectangle(Rectangle(Field(0, 0), Field(self.dimension - 1, self.dimension - 1)),
                             value=self.EMPTY_SEEN)
-        self._gen_walls()
+        self.gen_walls()
 
-    def _gen_walls(self):
+    def gen_walls(self):
         if isinstance(self.area, Area):
             for r in self.area.all_rectangles():
                 self.fill_rectangle(r, value=self.WALL)
@@ -38,7 +38,7 @@ class BinaryPrinter:
 
     def set_position(self, field, symbol):
         if isinstance(field, Field):
-            self.fields[field.x][field.y] = symbol
+            self.fields[field.x][field.y] = self.SYMBOL_TO_VALUE[symbol]
 
     def fill_rectangle(self, rect, symbol=None, value=None):
         if symbol and not value:

@@ -1,6 +1,3 @@
-from enum import Enum
-
-import bitarray as bitarray
 import numpy as np
 
 from model.point import Point
@@ -49,17 +46,27 @@ class LightMap:
                 visible[x, y] = True if Ray(source, Point(x, y), area=area).valid() else False
         return visible
 
-    def look_around_at(self, coordinates):
-        was_seen = self.is_checked(coordinates)
+    def look_around_at(self, position):
+        """Updates the "seen" area with the part visible from position
+        :param position: Field at which we like the Walker to look around
+        """
+        was_seen = self.is_checked(position)
+        self.to_discover = self.shadow_map_with_new_position(position)
+        return not self.is_checked(position)
+
+    def shadow_map_with_new_position(self, position):
+        """Returns a ndarray which is would be the current "visited" are after moving to the position
+        :param position: Field from which we would like the Walker to potentially to look around
+        """
+        coordinates = (position.x, position.y)
         to_remove = np.logical_and(self.to_discover, self.shadow_map[coordinates])
-        self.to_discover = np.logical_xor(self.to_discover, to_remove)
-        return not was_seen
+        return np.logical_xor(self.to_discover, to_remove)
 
-    def remains_to_be_checked(self, coordinates):
-        return self.to_discover[coordinates[0], coordinates[1]]
+    def remains_to_be_checked(self, position):
+        return self.to_discover[(position.x, position.y)]
 
-    def is_checked(self, coordinates):
-        return not self.remains_to_be_checked(coordinates)
+    def is_checked(self, position):
+        return not self.remains_to_be_checked(position)
 
     def finished(self):
         return np.sum(self.to_discover) <= 0
