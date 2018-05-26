@@ -1,9 +1,5 @@
-import numpy as np
-
 from model.field import Field
 from model.move import Move
-from model.view import ViewGenerator
-from model.empty_view import EmptyView
 
 
 class Agent:
@@ -55,8 +51,6 @@ class Agent:
             self.path.append(self.position)
         else:
             raise Exception("Cannot step on the given field")
-
-
 
     # Inner class
     class StepChecker:

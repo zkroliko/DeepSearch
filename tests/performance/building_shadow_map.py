@@ -1,7 +1,6 @@
 import time
 
 from model.lightMap import LightMap
-from model.lightMapOld import LightMapOld
 from model.point import Point
 from model.view import ViewGenerator
 from examples.Scenario1 import Scenario1
