@@ -1,12 +1,11 @@
 import unittest
-from sets import Set
 
 from model.area import Area
 from model.field import Field, FieldType
 from model.point import Point
 from model.rectangle import Rectangle
 from model.view import ViewGenerator
-from model.tools.Printer import Printer
+from model.tools.text_printer import TextPrinter
 
 
 class TestPrinter(unittest.TestCase):
@@ -32,6 +31,6 @@ class TestPrinter(unittest.TestCase):
         v.shine_from(Point(4, 4))
 
         # Just for printing
-        printer = Printer(a)
+        printer = TextPrinter(a)
         printer.set_view(v.lm)
         printer.to_file("view.txt")

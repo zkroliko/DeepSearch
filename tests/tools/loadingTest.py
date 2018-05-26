@@ -3,7 +3,7 @@ import unittest
 from model.area import Area
 from model.field import Field
 from model.rectangle import Rectangle
-from model.tools.Loader import load_from_file
+from model.tools.loader import load_from_file
 
 
 class TestLoading(unittest.TestCase):

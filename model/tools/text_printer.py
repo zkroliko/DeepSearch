@@ -6,7 +6,7 @@ from model.area import Area
 import numpy as np
 
 
-class Printer:
+class TextPrinter:
     EMPTY = ' '
     OCCUPIED = 'x'
     SHADOW = '.'
@@ -17,9 +17,9 @@ class Printer:
         self.dimension = area.main.width()
         self.fields = np.zeros(shape=(self.dimension, self.dimension), dtype=int).tolist()  # type: List[List]
         self.fill_rectangle(Rectangle(Field(0, 0), Field(self.dimension - 1, self.dimension - 1)), self.EMPTY)
-        self.__gen_background()
+        self._gen_walls()
 
-    def __gen_background(self):
+    def _gen_walls(self):
         if isinstance(self.area, Area):
             for r in self.area.all_rectangles():
                 self.fill_rectangle(r, self.OCCUPIED)

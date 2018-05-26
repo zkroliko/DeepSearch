@@ -32,7 +32,7 @@ class Agent:
                     possible.append(candidate_move)
         # Check if we are not blocked
         if possible.__len__() == 0:
-            raise Exception("Agent cannot make any moves from field %s" % (self.position))
+            raise Exception(u"Agent cannot make any moves from field {0:s}".format(self.position))
         # Asking the decision maker for move
         next_move = self.decider.decide(possible, self.position)
         # Making the move
