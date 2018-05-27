@@ -53,12 +53,12 @@ class Simulation:
         self.enemies_config = self._configure_enemies()
         print("Configured {} opponents".format(self.N_OPPONENTS))
 
-    def get_fields(self, actors, walker):
-        printer = TextPrinter(self.scenario.area())
-        printer.set_view(walker.light_map.to_discover)
+    def generate_textual_description(self, actors, walker):
+        text_printer = TextPrinter(self.scenario.area())
+        text_printer.set_view(walker.light_map.to_discover)
         for actor in actors:
-            printer.set_position(actor.position, actor.symbol)
-        return printer.fields
+            text_printer.set_position(actor.position, actor.symbol)
+        return text_printer.fields
 
     def get_map(self):
         printer = TextPrinter(self.scenario.area())
@@ -118,6 +118,7 @@ class Simulation:
                             e.check_effect(w)
                             self.track(actors, w)
                 reward = self.sh.assess_solution(w)
+                w.decider.commit_learning_data(reward)
                 # Recording data
                 data = "%s, %s" % (reward, time.time() - start)
                 alive_msg = "dead" if w.dead else "alive"
@@ -143,5 +144,6 @@ class Simulation:
         return self.global_track
 
     def track(self, actors, walker):
-        self.global_track.append(self.get_fields(actors, walker))
+        self.global_track.append(self.generate_textual_description(actors, walker))
+        walker.decider.consume_learning_data()
 
