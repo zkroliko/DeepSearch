@@ -15,7 +15,7 @@ or
 
 ## Powershell
 
-`$env:FLASK_APP = knowledge_server.py`
+`$env:FLASK_APP = "knowledge_server.py"`
 
 `flask run`
 
