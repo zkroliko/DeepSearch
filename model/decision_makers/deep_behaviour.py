@@ -1,4 +1,5 @@
 import json
+import random
 
 import numpy as np
 import requests
@@ -12,6 +13,10 @@ class DeepBehaviour:
     distribution = np.random.rand
 
     ASK_URL = "http://localhost:5000/ask"
+
+    ALPHA = 0.1
+    EPSILON = 0.7
+    GAMMA = 0.4
 
     ASK_HEADERS = {
         'Authorization': 'XXXXX',
@@ -38,14 +43,22 @@ class DeepBehaviour:
     def decide(self, possible_moves, position=None):
         # They correspond to individual moves
         map_images = self._gen_maps(possible_moves)
-        try:
-            probabilities = self.model.value_maps(map_images)
-        except IOError as e:
-            print("Problem with model, loading defaults: {}".format(e))
+        if random.random() < self.EPSILON:
+            # Experiment
             default_prob = 1.0 / len(possible_moves)
-            probabilities = [default_prob] * len(possible_moves)
-        weighted_moves = [(m, p) for m, p in zip(possible_moves, probabilities)]
+            values = [default_prob] * len(possible_moves)
+            weighted_moves = [(m, p) for m, p in zip(possible_moves, values)]
+        else:
+            try:
+                values = self.model.value_maps(map_images)
+                print(values)
+            except IOError as e:
+                print("Problem with model, loading defaults: {}".format(e))
+                default_prob = 1.0 / len(possible_moves)
+                values = [default_prob] * len(possible_moves)
+            weighted_moves = [(m, p) for m, p in zip(possible_moves, values)]
         return weighted_random(weighted_moves)
+
 
     def _gen_maps(self, possible_moves):
         positions = [move.target for move in possible_moves]
@@ -56,6 +69,7 @@ class DeepBehaviour:
         return maps
 
     def _gen_map(self, sm, new_position):
+        self.printer = BinaryPrinter(self.walker.area)
         self.printer.set_view(sm)
         self.printer.set_position(new_position, self.walker.symbol)
         for actor in self.enemies:

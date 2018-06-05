@@ -58,9 +58,8 @@ class ValueModel:
         model.summary()
 
         keras.optimizers.RMSprop(lr=0.001)
-        model.compile(loss='binary_crossentropy',
+        model.compile(loss='mean_squared_error',
                       optimizer=RMSprop(),
-                      loss_weights=[1.0],
                       metrics=["accuracy"])
         return model
 

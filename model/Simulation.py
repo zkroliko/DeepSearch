@@ -5,6 +5,7 @@ import sys
 import time
 
 from examples.Scenario1 import Scenario1
+from learning_model.value_model import ValueModel
 from model.SolutionHolder import SolutionHolder
 from model.agents.enemy import Enemy
 from model.agents.walker import Walker
@@ -30,6 +31,8 @@ class Simulation:
     DEFAULT_RESULTS_FILE = "iteration_results.csv"
     DEFAULT_OPTIMIZED_FILE = "best_path.csv"
 
+    MAX_STEPS = 500
+
     N_OPPONENTS = 3
 
     decision_makers = [RandomBehaviour, StandBehaviour, FollowBehaviour, RunAwayBehaviour,
@@ -51,6 +54,8 @@ class Simulation:
         self.sh = SolutionHolder()
         self.global_track = []
         self.enemies_config = self._configure_enemies()
+        self.model = ValueModel()
+        self.model.build()
         print("Configured {} opponents".format(self.N_OPPONENTS))
 
     def generate_textual_description(self, actors, walker):
@@ -65,11 +70,15 @@ class Simulation:
         return printer.fields
 
     def _configure_enemies(self):
-        enemy_config = []
-        decision_maker = random.choice(self.decision_makers)()
-        contact_effect = random.choice(self.contact_effects)(random_field)
-        for i in range(self.N_OPPONENTS):
-            enemy_config.append((decision_maker, contact_effect, str(i)))
+        # Random
+        # enemy_config = []
+        # decision_maker = random.choice(self.decision_makers)()
+        # contact_effect = random.choice(self.contact_effects)(random_field)
+        # for i in range(self.N_OPPONENTS):
+        #     enemy_config.append((decision_maker, contact_effect, str(i)))
+        # Manual
+        enemy_config = [(RunAwayBehaviour, WinEffect, "0"), (StandBehaviour, KillEffect, "1"),
+                        (CircleLeftBehaviour, TransportEffect, "2")]
         return enemy_config
 
     def _generate_enemies(self, enemy_config, main_walker):
@@ -77,7 +86,7 @@ class Simulation:
         enemies = []
         for d, c, s in enemy_config:
             position = random_field(self.scenario.area(), self.scenario.start())
-            enemy = Enemy(self.scenario.area(), position, d, contact_effect=c, symbol=s)
+            enemy = Enemy(self.scenario.area(), position, d(), contact_effect=c(random_field), symbol=s)
             # Extra info about the main walker
             enemy.decider.target = main_walker
             enemies.append(enemy)
@@ -98,13 +107,14 @@ class Simulation:
                 print("Shadow map saved")
             for iteration in range(self.n_iterations):
                 w = Walker(self.scenario.area(), self.scenario.start(), random_behaviour.RandomBehaviour(), shadow_map)
-                enemies = self._generate_enemies(self.enemies_config, w)
+                # enemies = self._generate_enemies(self.enemies_config, w)
+                enemies = []
                 # Configuring walker for deep behaviour
-                w.decider = DeepBehaviour(w, enemies)
-                actors = [w]+enemies
+                w.decider = DeepBehaviour(w, self.model, enemies)
+                actors = [w] + enemies
                 start = time.time()
                 self.global_track.clear()
-                while not w.finished():
+                while not w.finished() and len(w.path) < self.MAX_STEPS:
                     # Agent step
                     w.step()
                     self.track(actors, w)
@@ -117,13 +127,12 @@ class Simulation:
                             self.track(actors, w)
                             e.check_effect(w)
                             self.track(actors, w)
-                reward = self.sh.assess_solution(w)
+                reward = self.sh.assess_solution(w, maxed=True if len(w.path) == self.MAX_STEPS else False)
                 w.decider.commit_learning_data(reward)
                 # Recording data
-                data = "%s, %s" % (reward, time.time() - start)
                 alive_msg = "dead" if w.dead else "alive"
-                result_file.write(data + alive_msg + "\n")
-                print(data, alive_msg)
+                result_file.write(str(reward) + "\n")
+                print(reward, alive_msg)
                 self.on_iteration(iteration, reward)
 
             printer = TextPrinter(self.scenario.area())
@@ -132,7 +141,7 @@ class Simulation:
             if self.n_iterations == 1:
                 app.commit_sim_data(self)
                 app.play(self)
-            print("# Best solution's score is %s" % self.sh.bast_reward)
+            print("# Best solution's score is %s" % self.sh.best_reward)
             print("# Best solution is %s" % self.sh.path_to_str())
             print("Iteration progress saved in {}".format(self.result_file))
 
@@ -146,4 +155,3 @@ class Simulation:
     def track(self, actors, walker):
         self.global_track.append(self.generate_textual_description(actors, walker))
         walker.decider.consume_learning_data()
-

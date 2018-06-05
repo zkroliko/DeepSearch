@@ -1,7 +1,6 @@
 import numpy as np
 
 from model.decision_makers.target_behaviour import TargetBehaviour
-from model.utils.choiceUtils import weighted_random
 
 
 class CircleLeftBehaviour(TargetBehaviour):

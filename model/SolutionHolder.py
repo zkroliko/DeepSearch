@@ -1,18 +1,18 @@
 import sys
 
+
 class SolutionHolder:
-
-    DEATH_PUNISHMENT = -1
-
-    REWARD_COEFF = 10.0
+    DEATH_PUNISHMENT = 0
 
     def __init__(self):
         self.path = None
+        self.rewards = []
         self.best_reward = -sys.maxsize
 
-    def assess_solution(self, walker):
+    def assess_solution(self, walker, maxed=False):
         new_length = self.calc_length(walker.path)
-        reward = self.REWARD_COEFF * (1.0 / new_length) if not walker.dead else self.DEATH_PUNISHMENT
+        reward = (1.0 / (new_length - 1)) if not (walker.dead or maxed) else self.DEATH_PUNISHMENT
+        self.rewards.append(reward)
         if reward > self.best_reward:
             self.path = walker.path
             self.best_reward = reward
