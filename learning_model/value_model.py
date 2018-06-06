@@ -65,7 +65,7 @@ class ValueModel:
 
     def train(self, data):
         features = np.array([np.array(map) for map in data[0]])
-        labels = np.array([np.array([reward]) for reward in data[1]])
+        labels = np.array([reward for reward in data[1]])
         self._train(features.reshape(len(features), self.HEIGHT, self.WIDTH, 1), labels)
 
     def _train(self, feature, labels):

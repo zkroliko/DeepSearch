@@ -1,6 +1,7 @@
 import json
 import random
 
+import math
 import numpy as np
 import requests
 
@@ -15,7 +16,14 @@ class DeepBehaviour:
     ASK_URL = "http://localhost:5000/ask"
 
     ALPHA = 0.1
-    EPSILON = 0.7
+
+    EPSILON_START = 0.8
+    EPSILON_END = 0.05
+    EPSILON_RANGE = EPSILON_START - EPSILON_END
+
+    EPSILON_SCALING_WINDOW = 30
+    TARGET_REWARD = 0.2
+
     GAMMA = 0.4
 
     ASK_HEADERS = {
@@ -38,16 +46,24 @@ class DeepBehaviour:
         self.light_map = walker.light_map
         self.printer = BinaryPrinter(walker.area)
         self.model = model
+        self.previous_rewards = []
         self.past_experiences = []
+
+    def _experiment(self):
+        avg = sum(self.previous_rewards[-self.EPSILON_SCALING_WINDOW:]) / self.EPSILON_SCALING_WINDOW
+        scale = 1 - min(0, self.TARGET_REWARD - avg)
+        epsilon = self.EPSILON_END + scale * self.EPSILON_RANGE
+        return random.random() < epsilon
 
     def decide(self, possible_moves, position=None):
         # They correspond to individual moves
         map_images = self._gen_maps(possible_moves)
-        if random.random() < self.EPSILON:
+        if self._experiment():
             # Experiment
             default_prob = 1.0 / len(possible_moves)
             values = [default_prob] * len(possible_moves)
             weighted_moves = [(m, p) for m, p in zip(possible_moves, values)]
+            return weighted_random(weighted_moves)
         else:
             try:
                 values = self.model.value_maps(map_images)
@@ -57,8 +73,7 @@ class DeepBehaviour:
                 default_prob = 1.0 / len(possible_moves)
                 values = [default_prob] * len(possible_moves)
             weighted_moves = [(m, p) for m, p in zip(possible_moves, values)]
-        return weighted_random(weighted_moves)
-
+            return max(weighted_moves, key=lambda x: x[1])[0]
 
     def _gen_maps(self, possible_moves):
         positions = [move.target for move in possible_moves]
@@ -79,12 +94,16 @@ class DeepBehaviour:
 
     def consume_learning_data(self):
         sm = self.light_map.to_discover
-        self.past_experiences.append(self._gen_map(sm,self.walker.position))
+        self.past_experiences.append(self._gen_map(sm, self.walker.position))
 
     def commit_learning_data(self, reward):
         try:
-            labeled_images = ([e for e in self.past_experiences],
-                              [reward] * len(self.past_experiences))
+            self.previous_rewards.append(reward)
+            rewards = [reward * idx / len(self.past_experiences) for idx, r in enumerate(self.past_experiences)]
+            top = max(rewards)
+            rewards = [r / (top + 0.001) for r in rewards]
+            labeled_images = ([e for e in self.past_experiences], rewards)
             self.model.train(labeled_images)
+            self.past_experiences.clear()
         except IOError as e:
             print("Couldn't communicate learning data to model: ", e)
