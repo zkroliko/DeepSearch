@@ -7,13 +7,13 @@ import numpy as np
 
 
 class BinaryPrinter:
-    EMPTY_SEEN = -1.0
+    EMPTY_SEEN = -2.0
     EMPTY_UNSEEN = 0.0
     WALKER = 1.0
-    ENEMY_1 = 2.0
-    ENEMY_2 = 3.0
-    ENEMY_3 = 4.0
-    WALL = 5.0
+    ENEMY_1 = 3.0
+    ENEMY_2 = 4.0
+    ENEMY_3 = 5.0
+    WALL = 7.0
 
     SYMBOL_TO_VALUE = {"W": 1, "0": ENEMY_1, "1": ENEMY_2, "2": ENEMY_3}
 

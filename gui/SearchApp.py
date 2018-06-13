@@ -107,6 +107,7 @@ class AcoApp(App):
         self.last_sim = None
         self.best_reward = "0"
         self.last_reward = "0"
+        self.last_model = None
         self.avg_last_reward = "0"
         self.last_rewards = collections.deque(self.LAST_REWARD_N * [0], self.LAST_REWARD_N)
         self.iterations = int(self.config.get('Parameters', 'iterations'))
@@ -139,12 +140,15 @@ class AcoApp(App):
     def train(self):
         simulation = Simulation(self.scenarios[self.scenario], self.training_iteration_finished, self.iterations)
         simulation.start(self)
+        self.last_model = simulation.model
 
     def test(self):
         if not self.lock.locked():
             self.lock.acquire()
             self.__clear_map()
             simulation = Simulation(self.scenarios[self.scenario], self.test_iteration_finished, 1)
+            if self.last_model:
+                simulation.model = self.last_model
             simulation.start(self)
             self.lock.release()
         else:
@@ -160,7 +164,7 @@ class AcoApp(App):
             for map in map_images:
                 self.fields = map
                 self.__generate_graphics()
-                time.sleep(0.2)
+                time.sleep(0.05)
 
     def replay(self):
         if self.last_sim:

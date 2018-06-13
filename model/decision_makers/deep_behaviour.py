@@ -5,6 +5,7 @@ import math
 import numpy as np
 import requests
 
+from model.decision_makers.deep_behaviour_state import DeepBehaviourState
 from model.tools.binary_printer import BinaryPrinter
 from model.utils.choiceUtils import weighted_random
 import urllib
@@ -14,17 +15,6 @@ class DeepBehaviour:
     distribution = np.random.rand
 
     ASK_URL = "http://localhost:5000/ask"
-
-    ALPHA = 0.1
-
-    EPSILON_START = 0.8
-    EPSILON_END = 0.05
-    EPSILON_RANGE = EPSILON_START - EPSILON_END
-
-    EPSILON_SCALING_WINDOW = 30
-    TARGET_REWARD = 0.2
-
-    GAMMA = 0.4
 
     ASK_HEADERS = {
         'Authorization': 'XXXXX',
@@ -40,25 +30,20 @@ class DeepBehaviour:
         'Accept': 'application/json',
     }
 
-    def __init__(self, walker, model, enemies=None):
+    def __init__(self, walker, model, enemies=None, state=None):
         self.walker = walker
         self.enemies = enemies
         self.light_map = walker.light_map
         self.printer = BinaryPrinter(walker.area)
         self.model = model
-        self.previous_rewards = []
+        self.state = state
         self.past_experiences = []
-
-    def _experiment(self):
-        avg = sum(self.previous_rewards[-self.EPSILON_SCALING_WINDOW:]) / self.EPSILON_SCALING_WINDOW
-        scale = 1 - min(0, self.TARGET_REWARD - avg)
-        epsilon = self.EPSILON_END + scale * self.EPSILON_RANGE
-        return random.random() < epsilon
+        self.training_experiences = []
 
     def decide(self, possible_moves, position=None):
         # They correspond to individual moves
         map_images = self._gen_maps(possible_moves)
-        if self._experiment():
+        if random.random() < self.state.epsilon:
             # Experiment
             default_prob = 1.0 / len(possible_moves)
             values = [default_prob] * len(possible_moves)
@@ -67,7 +52,6 @@ class DeepBehaviour:
         else:
             try:
                 values = self.model.value_maps(map_images)
-                print(values)
             except IOError as e:
                 print("Problem with model, loading defaults: {}".format(e))
                 default_prob = 1.0 / len(possible_moves)
@@ -98,12 +82,13 @@ class DeepBehaviour:
 
     def commit_learning_data(self, reward):
         try:
-            self.previous_rewards.append(reward)
+            self.state.epsilon *= self.state.EPSILON_SCALING
             rewards = [reward * idx / len(self.past_experiences) for idx, r in enumerate(self.past_experiences)]
             top = max(rewards)
             rewards = [r / (top + 0.001) for r in rewards]
             labeled_images = ([e for e in self.past_experiences], rewards)
-            self.model.train(labeled_images)
+            self.training_experiences += labeled_images
+            self.model.train(self.training_experiences[-self.model.BATCH_SIZE:])
             self.past_experiences.clear()
         except IOError as e:
             print("Couldn't communicate learning data to model: ", e)
